@@ -7,9 +7,9 @@ import java.util.Vector;
  */
 public class Hand {
     private static final int MAX_CARDS = 4;
-    private Vector cardsInHand;
+    private Vector<ICard> cardsInHand;
     public Hand() {
-        cardsInHand = new Vector(MAX_CARDS);
+        cardsInHand = new Vector<>(MAX_CARDS);
     }
 
     public void drawCard() {
