@@ -12,6 +12,13 @@ public class Hand {
         cardsInHand = new Vector<>(MAX_CARDS);
     }
 
-    public void drawCard() {
+    public boolean addCard(ICard card) {
+        if(card == null)
+            return false;
+        return cardsInHand.add(card);
+    }
+
+    public ICard disCard(ICard card) {
+        return cardsInHand.remove(cardsInHand.indexOf(card));
     }
 }

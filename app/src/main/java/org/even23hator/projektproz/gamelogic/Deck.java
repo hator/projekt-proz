@@ -1,5 +1,6 @@
 package org.even23hator.projektproz.gamelogic;
 
+import java.util.Collections;
 import java.util.Vector;
 
 /**
@@ -8,7 +9,19 @@ import java.util.Vector;
 public class Deck {
     private Vector<ICard> cards;
 
-    Deck() {
+    public Deck() {
         cards = new Vector<>();
     }
+
+    public void shuffleDeck() {
+        Collections.shuffle(cards);
+    }
+
+    public ICard drawCard() {
+        if(!cards.isEmpty())
+            return cards.remove(0);
+        else
+            return null;
+    }
 }
+

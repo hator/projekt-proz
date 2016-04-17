@@ -1,5 +1,8 @@
 package org.even23hator.projektproz.gamelogic;
 
+import java.util.Collections;
+import java.util.Vector;
+
 /**
  * Created by Kamil on 2016-04-17.
  */
@@ -9,6 +12,7 @@ public class Player {
     private int hp;
     private Hand hand;
     private Deck deck;
+    private Grave grave;
 
     public Player () {
         hp = MAX_HP;
@@ -26,7 +30,7 @@ public class Player {
     }
 
     public void damage(int amount) {
-        this.hp--;
+        this.hp -= amount;
         if(!getAlive()) {
             this.onDeath();
         }
@@ -35,4 +39,19 @@ public class Player {
     private void onDeath() {
         // TODO implement observer
     }
+
+    public void drawCard() {
+        hand.addCard(deck.drawCard());
+        // TODO if fail move cards from Grave to Deck or kill
+    }
+
+    public void playCard(ICard card, Player target) {
+        card.playCard(this, target);
+    }
+
+    public void disCard(ICard card) {
+        hand.disCard(card);
+        grave.addCard(card);
+    }
+
 }
