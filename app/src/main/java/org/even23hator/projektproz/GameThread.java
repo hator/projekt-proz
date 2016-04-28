@@ -51,7 +51,7 @@ public class GameThread extends Thread {
             // NOTE(hator): for game mechanics update we use fixed timestep for simulation stability
             //      we accumulate time in dt and use it up for updates
             dt += elapsedTime;
-            Log.d("GameThread", "elapsed " + elapsedTime/1e6f + ", delta " + dt/1e6f);
+            Log.d("GameThread", "elapsed " + elapsedTime / 1e6f + ", delta " + dt / 1e6f);
             while(dt >= TIMESTEP_NS) {
                 dt -= TIMESTEP_NS;
                 update(TIMESTEP_NS);
@@ -95,8 +95,50 @@ public class GameThread extends Thread {
             paint.setColor(Color.argb(255, 0, 0, 0));
             paint.setTextSize(45);
 
-            canvas.drawText("delta " + dt/1000000.f + "ms", 20, 40, paint);
+            canvas.drawText("delta " + dt / 1000000.f + "ms", 20, 40, paint);
             canvas.drawText("FPS " + fps, 20, 100, paint);
+
+            int cardWidth = 280;
+            int cardHeight = 370;
+
+            paint.setColor(Color.BLACK);
+            paint.setStrokeWidth(10);
+            canvas.drawLine(0, 600, 1920, 600, paint);
+            canvas.drawLine(1000, 0, 1000, 600, paint);
+            canvas.drawLine(1250, 600, 1250, 1080, paint);
+
+
+            //TODO: draw cardsInHand
+            for(int i = 0; i < 4; i++) {
+                int beginX = 50 + i * cardWidth;
+                int endX = beginX + cardWidth;
+
+                paint.setColor(Color.BLACK);
+                paint.setStrokeWidth(10);
+                canvas.drawRect(beginX, 650, endX, 1020, paint);
+                paint.setStrokeWidth(0);
+                paint.setColor(Color.YELLOW);
+                canvas.drawRect(beginX + 10, 765, endX - 10, 1010, paint);
+                paint.setColor(Color.WHITE);
+                canvas.drawRect(beginX + 10, 660, endX - 10, 760, paint);
+
+                paint.setColor(Color.BLACK);
+                paint.setTextSize(40);
+                canvas.drawText("CARD_NAME", beginX + 15, 720, paint);
+                canvas.drawText("EFFECT", beginX + 15, 830, paint);
+            }
+
+            paint.setColor(Color.BLUE);
+            canvas.drawRect(1005, 0, 1920, 595, paint);
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(100);
+            canvas.drawText("OPPONENT", 1050, 180, paint);
+
+            paint.setColor(Color.GREEN);
+            canvas.drawRect(1255, 605, 1920, 1080, paint);
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(100);
+            canvas.drawText("MENU", 1350, 750, paint);
 
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
