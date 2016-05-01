@@ -7,6 +7,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import org.even23hator.projektproz.ui.ScreenCard;
+
 /**
  * Created by hator on 23.04.16.
  */
@@ -16,15 +18,20 @@ public class GameThread extends Thread {
 
     private volatile boolean running;
     private GameView gameView;
-    private long elapsedTime;
     private double fps;
-    private long frames;
     private long dt;
+
+    private ScreenCard[] cards;
 
     public GameThread(GameView gameView) {
         super();
         this.gameView = gameView;
         this.running = true;
+
+        cards = new ScreenCard[4];
+        for(int i=0; i < cards.length; ++i) {
+            cards[i] = new ScreenCard(50 + i*ScreenCard.CARD_W, 650);
+        }
     }
 
     public void setRunning(boolean running) {
@@ -34,11 +41,13 @@ public class GameThread extends Thread {
     @Override
     public void run() {
         long currentTime;
+        long elapsedTime;
         long startTime = SystemClock.elapsedRealtimeNanos();
         long lastFrameTime = startTime;
+        long frames = 0;
         dt = 0;
         fps = 0;
-        frames = 0;
+
 
         while (running) {
             currentTime = SystemClock.elapsedRealtimeNanos();
@@ -98,34 +107,15 @@ public class GameThread extends Thread {
             canvas.drawText("delta " + dt / 1000000.f + "ms", 20, 40, paint);
             canvas.drawText("FPS " + fps, 20, 100, paint);
 
-            int cardWidth = 280;
-            int cardHeight = 370;
-
             paint.setColor(Color.BLACK);
             paint.setStrokeWidth(10);
             canvas.drawLine(0, 600, 1920, 600, paint);
             canvas.drawLine(1000, 0, 1000, 600, paint);
             canvas.drawLine(1250, 600, 1250, 1080, paint);
 
-
-            //TODO: draw cardsInHand
-            for(int i = 0; i < 4; i++) {
-                int beginX = 50 + i * cardWidth;
-                int endX = beginX + cardWidth;
-
-                paint.setColor(Color.BLACK);
-                paint.setStrokeWidth(10);
-                canvas.drawRect(beginX, 650, endX, 1020, paint);
-                paint.setStrokeWidth(0);
-                paint.setColor(Color.YELLOW);
-                canvas.drawRect(beginX + 10, 765, endX - 10, 1010, paint);
-                paint.setColor(Color.WHITE);
-                canvas.drawRect(beginX + 10, 660, endX - 10, 760, paint);
-
-                paint.setColor(Color.BLACK);
-                paint.setTextSize(40);
-                canvas.drawText("CARD_NAME", beginX + 15, 720, paint);
-                canvas.drawText("EFFECT", beginX + 15, 830, paint);
+            //Draw cards in hand
+            for(ScreenCard card : cards) {
+                card.draw(canvas);
             }
 
             paint.setColor(Color.BLUE);
