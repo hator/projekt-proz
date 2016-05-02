@@ -10,4 +10,5 @@ public interface IScreenObject {
     void draw(Canvas canvas);
     void update(float dt);
     Rect getBounds();
+    void onClick();
 }

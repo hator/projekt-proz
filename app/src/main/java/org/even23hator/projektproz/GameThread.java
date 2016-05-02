@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import org.even23hator.projektproz.ui.InputManager;
 import org.even23hator.projektproz.ui.ScreenCard;
 
 /**
@@ -31,6 +32,7 @@ public class GameThread extends Thread {
         cards = new ScreenCard[4];
         for(int i=0; i < cards.length; ++i) {
             cards[i] = new ScreenCard(50 + i*ScreenCard.CARD_W, 650);
+            InputManager.getInstance().addObject(cards[i]);
         }
     }
 

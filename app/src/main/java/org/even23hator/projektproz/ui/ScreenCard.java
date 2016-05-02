@@ -15,6 +15,7 @@ public class ScreenCard implements IScreenObject {
     public static final int CARD_H = 370;
 
     private int x, y;
+    private boolean wasClicked = false;
 
     public ScreenCard(int x, int y) {
         this.x = x;
@@ -37,7 +38,7 @@ public class ScreenCard implements IScreenObject {
         paint.setColor(Color.BLACK);
         paint.setTextSize(40);
         canvas.drawText("CARD_NAME", x+15, y+70, paint);
-        canvas.drawText("EFFECT", x+15, y+180, paint);
+        canvas.drawText(wasClicked ? "Clicked" : "EFFECT", x+15, y+180, paint);
     }
 
     @Override
@@ -48,5 +49,10 @@ public class ScreenCard implements IScreenObject {
     @Override
     public Rect getBounds() {
         return new Rect(x, y, x+CARD_W, y+CARD_H);
+    }
+
+    @Override
+    public void onClick() {
+        wasClicked = true;
     }
 }
