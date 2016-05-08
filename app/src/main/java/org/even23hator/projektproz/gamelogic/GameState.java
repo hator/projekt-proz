@@ -12,6 +12,8 @@ public class GameState {
         turnNr = 0;
         turnPlayer = 0;
         players = new Player[2];
+        players[0] = new Player();
+        players[1] = new Player();
     }
 
     public void nextTurnNr() {

@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import org.even23hator.projektproz.gamelogic.GameState;
 import org.even23hator.projektproz.ui.InputManager;
 import org.even23hator.projektproz.ui.ScreenCard;
 
@@ -34,6 +35,7 @@ public class GameThread extends Thread {
             cards[i] = new ScreenCard(50 + i*ScreenCard.CARD_W, 650);
             InputManager.getInstance().addObject(cards[i]);
         }
+
     }
 
     public void setRunning(boolean running) {
@@ -62,7 +64,7 @@ public class GameThread extends Thread {
             // NOTE(hator): for game mechanics update we use fixed timestep for simulation stability
             //      we accumulate time in dt and use it up for updates
             dt += elapsedTime;
-            Log.d("GameThread", "elapsed " + elapsedTime / 1e6f + ", delta " + dt / 1e6f);
+            //Log.d("GameThread", "elapsed " + elapsedTime / 1e6f + ", delta " + dt / 1e6f);
             while(dt >= TIMESTEP_NS) {
                 dt -= TIMESTEP_NS;
                 update(TIMESTEP_NS);
@@ -123,14 +125,20 @@ public class GameThread extends Thread {
             paint.setColor(Color.BLUE);
             canvas.drawRect(1005, 0, 1920, 595, paint);
             paint.setColor(Color.BLACK);
-            paint.setTextSize(100);
-            canvas.drawText("OPPONENT", 1050, 180, paint);
+            paint.setTextSize(75);
+            canvas.drawText("OPPONENT HP=" + MainActivity.getGameState().getPlayer(1).getHp(), 1050, 180, paint);
 
             paint.setColor(Color.GREEN);
             canvas.drawRect(1255, 605, 1920, 1080, paint);
             paint.setColor(Color.BLACK);
             paint.setTextSize(100);
             canvas.drawText("MENU", 1350, 750, paint);
+
+            if(!MainActivity.getGameState().getPlayer(1).getAlive()) {
+                paint.setColor(Color.WHITE);
+                paint.setTextSize(200);
+                canvas.drawText("YOU WIN!!!", 350, 400, paint);
+            }
 
             surfaceHolder.unlockCanvasAndPost(canvas);
         }

@@ -1,6 +1,5 @@
 package org.even23hator.projektproz.ui;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;

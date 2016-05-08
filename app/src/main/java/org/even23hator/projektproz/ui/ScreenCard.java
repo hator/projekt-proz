@@ -4,7 +4,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
+import org.even23hator.projektproz.MainActivity;
+import org.even23hator.projektproz.gamelogic.CardShoot;
+import org.even23hator.projektproz.gamelogic.GameState;
+import org.even23hator.projektproz.gamelogic.ICard;
 import org.even23hator.projektproz.ui.IScreenObject;
 
 /**
@@ -16,10 +21,12 @@ public class ScreenCard implements IScreenObject {
 
     private int x, y;
     private boolean wasClicked = false;
+    private ICard card;
 
     public ScreenCard(int x, int y) {
         this.x = x;
         this.y = y;
+        card = new CardShoot();
     }
 
     @Override
@@ -54,5 +61,7 @@ public class ScreenCard implements IScreenObject {
     @Override
     public void onClick() {
         wasClicked = true;
+        //Log.d("Player", "HP = " + MainActivity.gameState.getPlayer(1).getHp());
+        card.playCard(MainActivity.getGameState().getPlayer(0), MainActivity.getGameState().getPlayer(1));
     }
 }

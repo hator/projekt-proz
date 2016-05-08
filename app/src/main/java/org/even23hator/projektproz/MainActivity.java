@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import org.even23hator.projektproz.gamelogic.GameState;
+
 
 public class MainActivity extends Activity {
     private GameThread gameThread;
     private GameView gameView;
+    private static GameState gameState = new GameState();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,5 +49,9 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static GameState getGameState() {
+        return gameState;
     }
 }
