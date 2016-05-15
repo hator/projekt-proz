@@ -8,9 +8,15 @@ import java.util.Vector;
  */
 public class Deck {
     private Vector<ICard> cards;
+    private Player player;
 
-    public Deck() {
+
+    public Deck(Player _player) {
         cards = new Vector<>();
+        player = _player;
+        for(int i=0; i<10; i++) {
+            cards.addElement(new CardShoot());
+        }
     }
 
     public void shuffleDeck() {

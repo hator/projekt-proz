@@ -23,16 +23,19 @@ public class ScreenCard implements IScreenObject {
     private boolean wasClicked = false;
     private ICard card;
 
-    public ScreenCard(int x, int y) {
+    public ScreenCard(int x, int y, ICard _card) {
         this.x = x;
         this.y = y;
-        card = new CardShoot();
+        card = _card;
     }
 
     @Override
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
+
+        if(wasClicked) {paint.setColor(Color.RED);}
+        else {paint.setColor(Color.BLACK);}
+
         paint.setStrokeWidth(10);
         canvas.drawRect(x, y, x+CARD_W, y + CARD_H, paint);
 
@@ -60,8 +63,12 @@ public class ScreenCard implements IScreenObject {
 
     @Override
     public void onClick() {
-        wasClicked = true;
+        if(!wasClicked) {
+            wasClicked = true;
+        }
         //Log.d("Player", "HP = " + MainActivity.gameState.getPlayer(1).getHp());
-        card.playCard(MainActivity.getGameState().getPlayer(0), MainActivity.getGameState().getPlayer(1));
+        else {
+            card.playCard(MainActivity.getGameState().getPlayer(0), MainActivity.getGameState().getPlayer(1));
+        }
     }
 }

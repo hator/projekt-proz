@@ -8,14 +8,22 @@ import java.util.Vector;
  */
 public class Player {
     private static final int MAX_HP = 3;
+    private static final double INIT_ACC = 5;
+    private static final double INIT_DODGE = 4;
 
     private int hp;
-    private Hand hand;
+    private double accuracy;
+    private double dodge;
     private Deck deck;
+    private Hand hand;
     private Grave grave;
 
     public Player () {
         hp = MAX_HP;
+        accuracy = INIT_ACC;
+        dodge = INIT_DODGE;
+        deck = new Deck(this);
+        hand = new Hand(this);
     }
     public void setHp(int _hp) {
         hp = _hp;
@@ -54,4 +62,35 @@ public class Player {
         grave.addCard(card);
     }
 
+    public double getDodge() {
+        return dodge;
+    }
+
+    public void setDodge(double dodge) {
+        this.dodge = dodge;
+    }
+
+    public double getAccuracy() {
+        return accuracy;
+    }
+
+    public void setAccuracy(double accuracy) {
+        this.accuracy = accuracy;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
+
+    public Hand getHand() {
+        return hand;
+    }
+
+    public void setHand(Hand hand) {
+        this.hand = hand;
+    }
 }

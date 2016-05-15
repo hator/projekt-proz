@@ -7,6 +7,8 @@ public class GameState {
     private Player[] players;
     private int turnNr;
     private int turnPlayer;
+    private ICard lastAction;
+    private String info;
 
     public GameState() {
         turnNr = 0;
@@ -14,6 +16,8 @@ public class GameState {
         players = new Player[2];
         players[0] = new Player();
         players[1] = new Player();
+        lastAction = null;
+        info = new String("Pojedynek rozpoczęty.");
     }
 
     public void nextTurnNr() {
@@ -39,4 +43,19 @@ public class GameState {
             return null;
     }
 
+    public ICard getLastAction() {
+        return lastAction;
+    }
+
+    public void setLastAction(ICard lastAction) {
+        this.lastAction = lastAction;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
 }

@@ -8,8 +8,14 @@ import java.util.Vector;
 public class Hand {
     private static final int MAX_CARDS = 4;
     private Vector<ICard> cardsInHand;
-    public Hand() {
+    private Player player;
+
+    public Hand(Player _player) {
         cardsInHand = new Vector<>(MAX_CARDS);
+        player = _player;
+        for(int i = 0; i < MAX_CARDS; i++) {
+            this.addCard(player.getDeck().drawCard());
+        }
     }
 
     public boolean addCard(ICard card) {
@@ -20,5 +26,13 @@ public class Hand {
 
     public ICard disCard(ICard card) {
         return cardsInHand.remove(cardsInHand.indexOf(card));
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public ICard getCard(int index) {
+        return cardsInHand.get(index);
     }
 }

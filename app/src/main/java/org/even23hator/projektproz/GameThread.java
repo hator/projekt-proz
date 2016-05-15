@@ -32,7 +32,7 @@ public class GameThread extends Thread {
 
         cards = new ScreenCard[4];
         for(int i=0; i < cards.length; ++i) {
-            cards[i] = new ScreenCard(50 + i*ScreenCard.CARD_W, 650);
+            cards[i] = new ScreenCard(50 + i*ScreenCard.CARD_W, 650, MainActivity.getGameState().getPlayer(0).getHand().getCard(i));
             InputManager.getInstance().addObject(cards[i]);
         }
 
@@ -110,6 +110,7 @@ public class GameThread extends Thread {
 
             canvas.drawText("delta " + dt / 1000000.f + "ms", 20, 40, paint);
             canvas.drawText("FPS " + fps, 20, 100, paint);
+            canvas.drawText(MainActivity.getGameState().getInfo(),20, 160, paint);
 
             paint.setColor(Color.BLACK);
             paint.setStrokeWidth(10);
