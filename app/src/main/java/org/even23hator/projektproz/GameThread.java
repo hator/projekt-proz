@@ -4,11 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
-import org.even23hator.projektproz.gamelogic.GameState;
-import org.even23hator.projektproz.ui.InputManager;
+import org.even23hator.projektproz.ui.ScreenManager;
 import org.even23hator.projektproz.ui.ScreenCard;
 
 /**
@@ -33,7 +31,7 @@ public class GameThread extends Thread {
         cards = new ScreenCard[4];
         for(int i=0; i < cards.length; ++i) {
             cards[i] = new ScreenCard(50 + i*ScreenCard.CARD_W, 650, MainActivity.getGameState().getPlayer(0).getHand().getCard(i));
-            InputManager.getInstance().addObject(cards[i]);
+            ScreenManager.getInstance().addObject(cards[i]);
         }
 
     }
@@ -119,9 +117,7 @@ public class GameThread extends Thread {
             canvas.drawLine(1250, 600, 1250, 1080, paint);
 
             //Draw cards in hand
-            for(ScreenCard card : cards) {
-                card.draw(canvas);
-            }
+            ScreenManager.getInstance().draw(canvas);
 
             paint.setColor(Color.BLUE);
             canvas.drawRect(1005, 0, 1920, 595, paint);

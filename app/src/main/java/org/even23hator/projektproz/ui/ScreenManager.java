@@ -1,5 +1,6 @@
 package org.even23hator.projektproz.ui;
 
+import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -8,11 +9,11 @@ import java.util.List;
 /**
  * Created by hator on 01.05.16.
  */
-public class InputManager {
-    private static InputManager instance = null;
-    public static InputManager getInstance() {
+public class ScreenManager {
+    private static ScreenManager instance = null;
+    public static ScreenManager getInstance() {
         if(instance == null) {
-            instance = new InputManager();
+            instance = new ScreenManager();
         }
         return instance;
     }
@@ -21,7 +22,7 @@ public class InputManager {
     private List<IScreenObject> objects;
 
 
-    private InputManager() {
+    private ScreenManager() {
         objects = new ArrayList<>();
     }
 
@@ -42,5 +43,11 @@ public class InputManager {
             return true;
         }
         return false;
+    }
+
+    public void draw(Canvas canvas) {
+        for(IScreenObject so : objects) {
+            so.draw(canvas);
+        }
     }
 }
