@@ -65,10 +65,15 @@ public class ScreenCard implements IScreenObject {
 
     @Override
     public void onClick() {
-        if(!wasClicked) {
+        if(wasClicked) {
             MessageRouter.getInstance().routeMessage(new Message(messageTypeFromCardType(this.card), state.getPlayerMe(), state.getPlayerOther()));
+            MessageRouter.getInstance().routeMessage(new Message(MessageType.DisCard, state.getPlayerMe(), state.getPlayerOther()));
+            wasClicked = false;
         }
-        wasClicked = true;
+        else {
+            MessageRouter.getInstance().routeMessage(new Message(MessageType.UnclickCard, state.getPlayerMe(), state.getPlayerOther()));
+            wasClicked = true;
+        }
     }
 
     private MessageType messageTypeFromCardType(CardType card) {
@@ -79,5 +84,13 @@ public class ScreenCard implements IScreenObject {
                 return MessageType.PlayCardAim;
         }
         return null;
+    }
+
+    public boolean isWasClicked() {
+        return wasClicked;
+    }
+
+    public void setWasClicked(boolean wasClicked) {
+        this.wasClicked = wasClicked;
     }
 }

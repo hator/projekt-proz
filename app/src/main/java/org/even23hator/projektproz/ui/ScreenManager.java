@@ -29,6 +29,9 @@ public class ScreenManager {
     public void addObject(IScreenObject obj) {
         objects.add(obj);
     }
+    public void removeObject(IScreenObject obj) {
+        objects.remove(obj);
+    }
 
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == event.ACTION_DOWN) {

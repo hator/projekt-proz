@@ -6,8 +6,14 @@ import android.graphics.Paint;
 import android.os.SystemClock;
 import android.view.SurfaceHolder;
 
+import org.even23hator.projektproz.message.IMessageListener;
+import org.even23hator.projektproz.message.Message;
+import org.even23hator.projektproz.message.MessageRouter;
+import org.even23hator.projektproz.message.MessageType;
 import org.even23hator.projektproz.ui.ScreenManager;
 import org.even23hator.projektproz.ui.ScreenCard;
+
+import java.util.Vector;
 
 /**
  * Created by hator on 23.04.16.
@@ -21,19 +27,42 @@ public class GameThread extends Thread {
     private double fps;
     private long dt;
 
-    private ScreenCard[] cards;
+    private Vector<ScreenCard> cards;
 
     public GameThread(GameView gameView) {
         super();
         this.gameView = gameView;
         this.running = true;
 
-        cards = new ScreenCard[4];
-        for(int i=0; i < cards.length; ++i) {
-            cards[i] = new ScreenCard(50 + i*ScreenCard.CARD_W, 650, MainActivity.getGameState().getPlayerMe().getHand().getCard(i));
-            ScreenManager.getInstance().addObject(cards[i]);
+        cards = new Vector<>();
+        for(int i=0; i < 4; ++i) {
+            cards.addElement(new ScreenCard(50 + i*ScreenCard.CARD_W, 650, MainActivity.getGameState().getPlayerMe().getHand().getCard(i)));
+            ScreenManager.getInstance().addObject(cards.get(i));
         }
+        MessageRouter.getInstance().registerListener(new IMessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                for(ScreenCard card : cards) {
+                    card.setWasClicked(false);
+                }
+            }
+        }, MessageType.UnclickCard);
 
+        MessageRouter.getInstance().registerListener(new IMessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                ScreenCard temp = null;
+                for(int i = 0; i < cards.size(); ++i) {
+                    if(cards.get(i).isWasClicked()) {
+                        temp = cards.get(i);
+                        ScreenManager.getInstance().removeObject(temp);
+                        MainActivity.getGameState().getPlayerMe().getHand().removeCard(i);
+                        break;
+                    }
+                }
+                cards.remove(temp);
+            }
+        }, MessageType.DisCard);
     }
 
     public void setRunning(boolean running) {
@@ -108,7 +137,7 @@ public class GameThread extends Thread {
 
             canvas.drawText("delta " + dt / 1000000.f + "ms", 20, 40, paint);
             canvas.drawText("FPS " + fps, 20, 100, paint);
-            canvas.drawText(MainActivity.getGameState().getInfo(),20, 160, paint);
+            canvas.drawText(MainActivity.getGameState().getInfo(), 20, 160, paint);
 
             paint.setColor(Color.BLACK);
             paint.setStrokeWidth(10);

@@ -1,5 +1,7 @@
 package org.even23hator.projektproz.gamelogic;
 
+import org.even23hator.projektproz.ui.ScreenCard;
+
 import java.util.Vector;
 
 /**
@@ -22,8 +24,8 @@ public class Hand {
         cardsInHand.add(card);
     }
 
-    public Player getPlayer() {
-        return player;
+    public void removeCard(int i) {
+        cardsInHand.remove(i);
     }
 
     public CardType getCard(int index) {
