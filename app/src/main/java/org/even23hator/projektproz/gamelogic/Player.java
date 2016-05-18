@@ -1,7 +1,9 @@
 package org.even23hator.projektproz.gamelogic;
 
-import java.util.Collections;
-import java.util.Vector;
+import android.util.Log;
+
+import org.even23hator.projektproz.message.Message;
+
 
 /**
  * Created by Kamil on 2016-04-17.
@@ -16,7 +18,6 @@ public class Player {
     private double dodge;
     private Deck deck;
     private Hand hand;
-    private Grave grave;
 
     public Player () {
         hp = MAX_HP;
@@ -25,6 +26,7 @@ public class Player {
         deck = new Deck(this);
         hand = new Hand(this);
     }
+
     public void setHp(int _hp) {
         hp = _hp;
     }
@@ -51,15 +53,6 @@ public class Player {
     public void drawCard() {
         hand.addCard(deck.drawCard());
         // TODO if fail move cards from Grave to Deck or kill
-    }
-
-    public void playCard(ICard card, Player target) {
-        card.playCard(this, target);
-    }
-
-    public void disCard(ICard card) {
-        hand.disCard(card);
-        grave.addCard(card);
     }
 
     public double getDodge() {
@@ -93,4 +86,6 @@ public class Player {
     public void setHand(Hand hand) {
         this.hand = hand;
     }
+
+
 }

@@ -30,7 +30,7 @@ public class GameThread extends Thread {
 
         cards = new ScreenCard[4];
         for(int i=0; i < cards.length; ++i) {
-            cards[i] = new ScreenCard(50 + i*ScreenCard.CARD_W, 650, MainActivity.getGameState().getPlayer(0).getHand().getCard(i));
+            cards[i] = new ScreenCard(50 + i*ScreenCard.CARD_W, 650, MainActivity.getGameState().getPlayerMe().getHand().getCard(i));
             ScreenManager.getInstance().addObject(cards[i]);
         }
 
@@ -123,7 +123,7 @@ public class GameThread extends Thread {
             canvas.drawRect(1005, 0, 1920, 595, paint);
             paint.setColor(Color.BLACK);
             paint.setTextSize(75);
-            canvas.drawText("OPPONENT HP=" + MainActivity.getGameState().getPlayer(1).getHp(), 1050, 180, paint);
+            canvas.drawText("OPPONENT HP=" + MainActivity.getGameState().getPlayerOther().getHp(), 1050, 180, paint);
 
             paint.setColor(Color.GREEN);
             canvas.drawRect(1255, 605, 1920, 1080, paint);
@@ -131,7 +131,7 @@ public class GameThread extends Thread {
             paint.setTextSize(100);
             canvas.drawText("MENU", 1350, 750, paint);
 
-            if(!MainActivity.getGameState().getPlayer(1).getAlive()) {
+            if(!MainActivity.getGameState().getPlayerOther().getAlive()) {
                 paint.setColor(Color.WHITE);
                 paint.setTextSize(200);
                 canvas.drawText("YOU WIN!!!", 350, 400, paint);

@@ -19,6 +19,7 @@ public class MessageRouter extends Observable {
     private EnumMap<MessageType,Set<IMessageListener>> listeners;
 
     private MessageRouter() {
+        listeners = new EnumMap<>(MessageType.class);
     }
 
     public void registerListener(IMessageListener listener, MessageType type) {

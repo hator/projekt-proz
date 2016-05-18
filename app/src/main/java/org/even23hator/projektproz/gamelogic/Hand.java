@@ -7,7 +7,7 @@ import java.util.Vector;
  */
 public class Hand {
     private static final int MAX_CARDS = 4;
-    private Vector<ICard> cardsInHand;
+    private Vector<CardType> cardsInHand;
     private Player player;
 
     public Hand(Player _player) {
@@ -18,21 +18,15 @@ public class Hand {
         }
     }
 
-    public boolean addCard(ICard card) {
-        if(card == null)
-            return false;
-        return cardsInHand.add(card);
-    }
-
-    public ICard disCard(ICard card) {
-        return cardsInHand.remove(cardsInHand.indexOf(card));
+    public void addCard(CardType card) {
+        cardsInHand.add(card);
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public ICard getCard(int index) {
+    public CardType getCard(int index) {
         return cardsInHand.get(index);
     }
 }

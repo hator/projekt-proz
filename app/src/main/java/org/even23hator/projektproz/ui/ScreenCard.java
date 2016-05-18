@@ -4,13 +4,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 
 import org.even23hator.projektproz.MainActivity;
-import org.even23hator.projektproz.gamelogic.CardShoot;
+import org.even23hator.projektproz.gamelogic.CardType;
 import org.even23hator.projektproz.gamelogic.GameState;
-import org.even23hator.projektproz.gamelogic.ICard;
-import org.even23hator.projektproz.ui.IScreenObject;
+import org.even23hator.projektproz.message.Message;
+import org.even23hator.projektproz.message.MessageRouter;
+import org.even23hator.projektproz.message.MessageType;
 
 /**
  * Created by hator on 01.05.16.
@@ -21,12 +21,14 @@ public class ScreenCard implements IScreenObject {
 
     private int x, y;
     private boolean wasClicked = false;
-    private ICard card;
+    private CardType card;
+    private GameState state;
 
-    public ScreenCard(int x, int y, ICard _card) {
+    public ScreenCard(int x, int y, CardType _card) {
         this.x = x;
         this.y = y;
         card = _card;
+        state = MainActivity.getGameState();
     }
 
     @Override
@@ -37,17 +39,17 @@ public class ScreenCard implements IScreenObject {
         else {paint.setColor(Color.BLACK);}
 
         paint.setStrokeWidth(10);
-        canvas.drawRect(x, y, x+CARD_W, y + CARD_H, paint);
+        canvas.drawRect(x, y, x + CARD_W, y + CARD_H, paint);
 
         paint.setStrokeWidth(0);
         paint.setColor(Color.YELLOW);
-        canvas.drawRect(x + 10, y + 115, x+CARD_W-10, y+CARD_H-10, paint);
+        canvas.drawRect(x + 10, y + 115, x + CARD_W - 10, y + CARD_H - 10, paint);
         paint.setColor(Color.WHITE);
-        canvas.drawRect(x + 10, y + 10, x+CARD_W-10, y+110, paint);
+        canvas.drawRect(x + 10, y + 10, x + CARD_W - 10, y + 110, paint);
 
         paint.setColor(Color.BLACK);
         paint.setTextSize(40);
-        canvas.drawText("CARD_NAME", x+15, y+70, paint);
+        canvas.drawText(card.toString(), x + 15, y + 70, paint);
         canvas.drawText(wasClicked ? "Clicked" : "EFFECT", x+15, y+180, paint);
     }
 
@@ -64,11 +66,18 @@ public class ScreenCard implements IScreenObject {
     @Override
     public void onClick() {
         if(!wasClicked) {
-            wasClicked = true;
+            MessageRouter.getInstance().routeMessage(new Message(messageTypeFromCardType(this.card), state.getPlayerMe(), state.getPlayerOther()));
         }
-        //Log.d("Player", "HP = " + MainActivity.gameState.getPlayer(1).getHp());
-        else {
-            card.playCard(MainActivity.getGameState().getPlayer(0), MainActivity.getGameState().getPlayer(1));
+        wasClicked = true;
+    }
+
+    private MessageType messageTypeFromCardType(CardType card) {
+        switch (card) {
+            case Shoot:
+                return MessageType.PlayCardShoot;
+            case Aim:
+                return MessageType.PlayCardAim;
         }
+        return null;
     }
 }

@@ -7,7 +7,7 @@ import java.util.Vector;
  * Created by Kamil on 2016-04-17.
  */
 public class Deck {
-    private Vector<ICard> cards;
+    private Vector<CardType> cards;
     private Player player;
 
 
@@ -15,7 +15,7 @@ public class Deck {
         cards = new Vector<>();
         player = _player;
         for(int i=0; i<10; i++) {
-            cards.addElement(new CardShoot());
+            cards.addElement(CardType.Shoot);
         }
     }
 
@@ -23,7 +23,7 @@ public class Deck {
         Collections.shuffle(cards);
     }
 
-    public ICard drawCard() {
+    public CardType drawCard() {
         if(!cards.isEmpty())
             return cards.remove(0);
         else

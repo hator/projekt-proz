@@ -4,20 +4,19 @@ package org.even23hator.projektproz.gamelogic;
  * Created by hator on 20.03.16.
  */
 public class GameState {
-    private Player[] players;
+    private Player playerMe, playerOther;
     private int turnNr;
-    private int turnPlayer;
-    private ICard lastAction;
+    private boolean myTurn;
     private String info;
+    private CardActions cardActions;
 
     public GameState() {
         turnNr = 0;
-        turnPlayer = 0;
-        players = new Player[2];
-        players[0] = new Player();
-        players[1] = new Player();
-        lastAction = null;
+        myTurn = true; // TODO depends on who begins
+        playerMe = new Player();
+        playerOther = new Player();
         info = new String("Pojedynek rozpoczęty.");
+        cardActions = new CardActions();
     }
 
     public void nextTurnNr() {
@@ -28,27 +27,18 @@ public class GameState {
         return turnNr;
     }
 
-    public void nextTurnPlayer() {
-        turnPlayer  = (++turnPlayer) % 2;
+    public Player getTurnPlayer() {
+        if(myTurn)
+            return playerMe;
+        return playerOther;
     }
 
-    public int getTurnPlayer() {
-        return turnPlayer;
+    public Player getPlayerMe() {
+        return playerMe;
     }
 
-    public Player getPlayer(int a) {
-        if(a < 2 && a >= 0)
-            return players[a];
-        else
-            return null;
-    }
-
-    public ICard getLastAction() {
-        return lastAction;
-    }
-
-    public void setLastAction(ICard lastAction) {
-        this.lastAction = lastAction;
+    public Player getPlayerOther() {
+        return playerOther;
     }
 
     public String getInfo() {
