@@ -4,10 +4,22 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import org.even23hator.projektproz.ui.ScreenManager;
 import org.even23hator.projektproz.ui.ScreenCard;
+
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.net.Socket;
 
 /**
  * Created by hator on 23.04.16.
@@ -20,6 +32,7 @@ public class GameThread extends Thread {
     private GameView gameView;
     private double fps;
     private long dt;
+    private RemoteMessagePasser remoteMessagePasser;
 
     private ScreenCard[] cards;
 
@@ -34,6 +47,20 @@ public class GameThread extends Thread {
             ScreenManager.getInstance().addObject(cards[i]);
         }
 
+        OutputStream out = new OutputStream() {
+            private StringBuilder sb = new StringBuilder();
+            @Override
+            public void write(int oneByte) throws IOException {
+                if(oneByte == '\n') {
+                    Log.d("OutputStream", sb.toString());
+                    sb = new StringBuilder();
+                } else {
+                    sb.append(oneByte);
+                }
+            }
+        };
+
+        remoteMessagePasser = new RemoteMessagePasser(null, out);
     }
 
     public void setRunning(boolean running) {
@@ -108,7 +135,7 @@ public class GameThread extends Thread {
 
             canvas.drawText("delta " + dt / 1000000.f + "ms", 20, 40, paint);
             canvas.drawText("FPS " + fps, 20, 100, paint);
-            canvas.drawText(MainActivity.getGameState().getInfo(),20, 160, paint);
+            canvas.drawText(MainActivity.getGameState().getInfo(), 20, 160, paint);
 
             paint.setColor(Color.BLACK);
             paint.setStrokeWidth(10);

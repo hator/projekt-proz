@@ -66,7 +66,10 @@ public class ScreenCard implements IScreenObject {
     @Override
     public void onClick() {
         if(!wasClicked) {
-            MessageRouter.getInstance().routeMessage(new Message(messageTypeFromCardType(this.card), state.getPlayerMe(), state.getPlayerOther()));
+            MessageRouter.getInstance().routeMessage(
+                    new Message(messageTypeFromCardType(this.card),
+                                state.getPlayerMe(),
+                                state.getPlayerOther()));
         }
         wasClicked = true;
     }
