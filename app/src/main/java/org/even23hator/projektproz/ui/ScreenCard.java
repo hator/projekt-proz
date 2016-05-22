@@ -1,5 +1,6 @@
 package org.even23hator.projektproz.ui;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,34 +24,27 @@ public class ScreenCard implements IScreenObject {
     private boolean wasClicked = false;
     private CardType card;
     private GameState state;
+    private Bitmap image;
 
     public ScreenCard(int x, int y, CardType _card) {
         this.x = x;
         this.y = y;
         card = _card;
         state = MainActivity.getGameState();
+        image = MainActivity.getGameView().getCardImages().get(_card);
     }
 
     @Override
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
 
-        if(wasClicked) {paint.setColor(Color.RED);}
-        else {paint.setColor(Color.BLACK);}
+        if(wasClicked) {
+            paint.setColor(Color.YELLOW);
+            paint.setStrokeWidth(10);
+            canvas.drawRect(x, y, x + CARD_W, y + CARD_H, paint);}
 
-        paint.setStrokeWidth(10);
-        canvas.drawRect(x, y, x + CARD_W, y + CARD_H, paint);
-
-        paint.setStrokeWidth(0);
-        paint.setColor(Color.YELLOW);
-        canvas.drawRect(x + 10, y + 115, x + CARD_W - 10, y + CARD_H - 10, paint);
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(x + 10, y + 10, x + CARD_W - 10, y + 110, paint);
-
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(40);
-        canvas.drawText(card.toString(), x + 15, y + 70, paint);
-        canvas.drawText(wasClicked ? "Clicked" : "EFFECT", x+15, y+180, paint);
+        Rect r = new Rect(x + 10, y + 10, x + CARD_W - 10, y + CARD_H - 10);
+        canvas.drawBitmap(image, null, r, paint);
     }
 
     @Override
@@ -82,6 +76,8 @@ public class ScreenCard implements IScreenObject {
                 return MessageType.PlayCardShoot;
             case Aim:
                 return MessageType.PlayCardAim;
+            case Heal:
+                return MessageType.PlayCardHeal;
         }
         return null;
     }

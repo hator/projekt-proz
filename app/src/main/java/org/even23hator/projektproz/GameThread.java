@@ -3,13 +3,18 @@ package org.even23hator.projektproz;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.SystemClock;
 import android.view.SurfaceHolder;
 
+import org.even23hator.projektproz.gamelogic.Deck;
+import org.even23hator.projektproz.gamelogic.Hand;
 import org.even23hator.projektproz.message.IMessageListener;
 import org.even23hator.projektproz.message.Message;
 import org.even23hator.projektproz.message.MessageRouter;
 import org.even23hator.projektproz.message.MessageType;
+import org.even23hator.projektproz.ui.BitmapType;
+import org.even23hator.projektproz.ui.ScreenHPBar;
 import org.even23hator.projektproz.ui.ScreenManager;
 import org.even23hator.projektproz.ui.ScreenCard;
 
@@ -28,21 +33,32 @@ public class GameThread extends Thread {
     private long dt;
 
     private Vector<ScreenCard> cards;
+    private ScreenHPBar oppHP, myHP;
 
     public GameThread(GameView gameView) {
         super();
         this.gameView = gameView;
         this.running = true;
 
+        // Create ScreenCards
         cards = new Vector<>();
-        for(int i=0; i < 4; ++i) {
-            cards.addElement(new ScreenCard(50 + i*ScreenCard.CARD_W, 650, MainActivity.getGameState().getPlayerMe().getHand().getCard(i)));
+        for(int i=0; i < Hand.MAX_CARDS; ++i) {
+            cards.addElement(new ScreenCard(20 + i*ScreenCard.CARD_W, 690, MainActivity.getGameState().getPlayerMe().getHand().getCard(i)));
             ScreenManager.getInstance().addObject(cards.get(i));
         }
+
+        // Create HPBars
+        oppHP = new ScreenHPBar(1090, 25, MainActivity.getGameState().getPlayerOther());
+        ScreenManager.getInstance().addObject(oppHP);
+
+        myHP = new ScreenHPBar(800, 550, MainActivity.getGameState().getPlayerMe());
+        ScreenManager.getInstance().addObject(myHP);
+
+        // Register Listeners
         MessageRouter.getInstance().registerListener(new IMessageListener() {
             @Override
             public void onMessage(Message message) {
-                for(ScreenCard card : cards) {
+                for (ScreenCard card : cards) {
                     card.setWasClicked(false);
                 }
             }
@@ -110,6 +126,25 @@ public class GameThread extends Thread {
             if(sleepTime > 0) {
                 SystemClock.sleep(sleepTime);
             }
+
+            // Replacing hand after playing 2 cards
+            if(cards.size() == 2) {
+                ScreenCard temp;
+                for(int i = cards.size() - 1; i >= 0; --i) {
+                    temp = cards.get(i);
+                    ScreenManager.getInstance().removeObject(temp);
+                    MainActivity.getGameState().getPlayerMe().getHand().removeCard(i);
+                    cards.remove(temp);
+                }
+                for(int i=0; i < Hand.MAX_CARDS; ++i) {
+                    if(MainActivity.getGameState().getPlayerMe().getDeck().getCards().size() == 0) {
+                        MainActivity.getGameState().getPlayerMe().setDeck(new Deck(MainActivity.getGameState().getPlayerMe()));
+                    }
+                    MainActivity.getGameState().getPlayerMe().drawCard();
+                    cards.addElement(new ScreenCard(20 + i * ScreenCard.CARD_W, 690, MainActivity.getGameState().getPlayerMe().getHand().getCard(i)));
+                    ScreenManager.getInstance().addObject(cards.get(i));
+                }
+            }
         }
     }
 
@@ -128,10 +163,12 @@ public class GameThread extends Thread {
 
             Canvas canvas = surfaceHolder.lockCanvas(null);
 
-            // background
-            canvas.drawColor(Color.argb(255, 15, 128, 255));
-
             Paint paint = new Paint();
+
+            // background
+            Rect r = new Rect(0, 0, 1920, 1080);
+            canvas.drawBitmap(gameView.getBitmaps().get(BitmapType.Background), null, r, paint);
+
             paint.setColor(Color.argb(255, 0, 0, 0));
             paint.setTextSize(45);
 
@@ -139,31 +176,30 @@ public class GameThread extends Thread {
             canvas.drawText("FPS " + fps, 20, 100, paint);
             canvas.drawText(MainActivity.getGameState().getInfo(), 20, 160, paint);
 
-            paint.setColor(Color.BLACK);
-            paint.setStrokeWidth(10);
-            canvas.drawLine(0, 600, 1920, 600, paint);
-            canvas.drawLine(1000, 0, 1000, 600, paint);
-            canvas.drawLine(1250, 600, 1250, 1080, paint);
+            // Draw players
+            r = new Rect(1500, 25, 1920, 600);
+            canvas.drawBitmap(gameView.getBitmaps().get(BitmapType.Opponent), null, r, paint);
 
-            //Draw cards in hand
+            r = new Rect(300, 0, 800, 670);
+            canvas.drawBitmap(gameView.getBitmaps().get(BitmapType.Me), null, r, paint);
+
+            // Draw HP and cards
             ScreenManager.getInstance().draw(canvas);
 
-            paint.setColor(Color.BLUE);
-            canvas.drawRect(1005, 0, 1920, 595, paint);
+            // Black Lines
             paint.setColor(Color.BLACK);
-            paint.setTextSize(75);
-            canvas.drawText("OPPONENT HP=" + MainActivity.getGameState().getPlayerOther().getHp(), 1050, 180, paint);
+            paint.setStrokeWidth(10);
+            canvas.drawLine(0, 670, 1920, 670, paint);
+            canvas.drawLine(900, 0, 1200, 670, paint);
+            canvas.drawLine(1200, 670, 1200, 1080, paint);
 
-            paint.setColor(Color.GREEN);
-            canvas.drawRect(1255, 605, 1920, 1080, paint);
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(100);
-            canvas.drawText("MENU", 1350, 750, paint);
+            r = new Rect(1450, 700, 1720, 780);
+            canvas.drawBitmap(gameView.getBitmaps().get(BitmapType.Menu), null, r, paint);
 
             if(!MainActivity.getGameState().getPlayerOther().getAlive()) {
                 paint.setColor(Color.WHITE);
                 paint.setTextSize(200);
-                canvas.drawText("YOU WIN!!!", 350, 400, paint);
+                canvas.drawText("YOU WON!!!", 350, 400, paint);
             }
 
             surfaceHolder.unlockCanvasAndPost(canvas);

@@ -10,7 +10,7 @@ import org.even23hator.projektproz.gamelogic.GameState;
 
 public class MainActivity extends Activity {
     private GameThread gameThread;
-    private GameView gameView;
+    private static GameView gameView;
     private static GameState gameState = new GameState();
 
     @Override
@@ -53,5 +53,9 @@ public class MainActivity extends Activity {
 
     public static GameState getGameState() {
         return gameState;
+    }
+
+    public static GameView getGameView() {
+        return gameView;
     }
 }

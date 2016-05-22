@@ -8,7 +8,7 @@ import java.util.Vector;
  * Created by Kamil on 2016-04-17.
  */
 public class Hand {
-    private static final int MAX_CARDS = 4;
+    public static final int MAX_CARDS = 4;
     private Vector<CardType> cardsInHand;
     private Player player;
 
