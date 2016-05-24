@@ -21,7 +21,8 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        gameView = new GameView(this);
+        gameThread = new GameThread();
+        gameView = new GameView(this, gameThread);
         setContentView(gameView);
     }
 
@@ -29,7 +30,6 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        gameThread = new GameThread(gameView);
         gameThread.setRunning(true);
 
         gameThread.start();
@@ -43,6 +43,8 @@ public class MainActivity extends Activity {
         boolean retry = true;
         while (retry) {
             try {
+                // FIXME takes long time
+                gameThread.interrupt();
                 gameThread.join();
                 retry = false;
             } catch (InterruptedException e) {
@@ -53,5 +55,10 @@ public class MainActivity extends Activity {
 
     public static GameState getGameState() {
         return gameState;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

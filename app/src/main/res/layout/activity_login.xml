@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.even23hator.projektproz.LoginActivity">
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/joinGameIP"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="183dp"
+        android:inputType="textUri" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Join Game"
+        android:id="@+id/joinGameText"
+        android:layout_above="@+id/joinGameIP"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Join Game"
+        android:id="@+id/joinGameButton"
+        android:layout_marginTop="56dp"
+        android:layout_below="@+id/joinGameText"
+        android:layout_centerHorizontal="true"
+        android:enabled="true"
+        android:onClick="onJoinGameClicked" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Game"
+        android:id="@+id/createGameButton"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="88dp"
+        android:enabled="true"
+        android:onClick="onCreateGameClicked" />
+
+</RelativeLayout>
