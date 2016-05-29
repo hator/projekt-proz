@@ -10,7 +10,7 @@ import org.even23hator.projektproz.gamelogic.GameState;
 
 public class MainActivity extends Activity {
     private GameThread gameThread;
-    private GameView gameView;
+    private static GameView gameView;
     private static GameState gameState = new GameState();
 
     @Override
@@ -21,8 +21,8 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        gameView = new GameView(this);
         gameThread = new GameThread();
-        gameView = new GameView(this, gameThread);
         setContentView(gameView);
     }
 
@@ -55,6 +55,10 @@ public class MainActivity extends Activity {
 
     public static GameState getGameState() {
         return gameState;
+    }
+
+    public static GameView getGameView() {
+        return gameView;
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.os.RemoteException;
 import android.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -29,18 +30,21 @@ public class LoginActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder _service) {
             service = new Messenger(_service);
             serviceBound = true;
+            Log.d("yolo", "onServiceConnected");
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             service = null;
             serviceBound = false;
+            Log.d("yolo", "onServiceDisconnected");
         }
     };
 
     private Messenger receiver = new Messenger(new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            Log.d("yolo", "ConnectMessage");
             switch (msg.what) {
                 case 1:
                     progressDialog.dismiss();
@@ -69,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.d("Login", "onCreate");
     }
 
     @Override
@@ -77,15 +82,17 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RemoteMessagePassingService.class);
         intent.putExtra(RemoteMessagePassingService.INTENT_ACTIVITY_MESSENGER, receiver);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        Log.d("Login", "onStart");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if(serviceBound) {
+        /* if(serviceBound) {
             unbindService(connection);
             serviceBound = false;
-        }
+        }*/
+        Log.d("Login", "onStop");
     }
 
     public void onCreateGameClicked(View view) {
@@ -115,10 +122,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void startSocketService(String joinIP) {
         Message msg = Message.obtain(null, RemoteMessagePassingService.MSG_CONNECT_TO, 0, 0, joinIP);
+        Log.d("yolo", "startSocketService");
         messageToService(msg);
     }
 
     private void messageToService(Message msg) {
+        Log.d("yolo", "messageToService");
         if (!serviceBound) return; // FIXME bind service
         msg.replyTo = this.receiver;
         try {

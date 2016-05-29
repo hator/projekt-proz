@@ -7,9 +7,13 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import org.even23hator.projektproz.gamelogic.Deck;
+import org.even23hator.projektproz.gamelogic.Hand;
 import org.even23hator.projektproz.message.IMessageListener;
 import org.even23hator.projektproz.message.Message;
 import org.even23hator.projektproz.message.MessageRouter;
+import org.even23hator.projektproz.message.MessageType;
+import org.even23hator.projektproz.ui.ScreenHPBar;
 import org.even23hator.projektproz.ui.ScreenManager;
 import org.even23hator.projektproz.ui.ScreenCard;
 
@@ -23,6 +27,7 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.Socket;
+import java.util.Vector;
 
 /**
  * Created by hator on 23.04.16.
@@ -35,19 +40,55 @@ public class GameThread extends Thread implements IMessageListener {
     public volatile double fps;
     public volatile long dt;
 
-    private ScreenCard[] cards;
+    private Vector<ScreenCard> cards;
+    private ScreenHPBar oppHP, myHP;
 
     public GameThread() {
         super();
         this.running = true;
 
-        cards = new ScreenCard[4];
-        for(int i=0; i < cards.length; ++i) {
-            cards[i] = new ScreenCard(50 + i*ScreenCard.CARD_W, 650, MainActivity.getGameState().getPlayerMe().getHand().getCard(i));
-            ScreenManager.getInstance().addObject(cards[i]);
+        cards = new Vector<>();
+        for(int i=0; i < Hand.MAX_CARDS; ++i) {
+            cards.addElement(new ScreenCard(20 + i*ScreenCard.CARD_W, 690, MainActivity.getGameState().getPlayerMe().getHand().getCard(i)));
+            ScreenManager.getInstance().addObject(cards.get(i));
         }
 
+        // Create HPBars
+        oppHP = new ScreenHPBar(1090, 25, MainActivity.getGameState().getPlayerOther());
+        ScreenManager.getInstance().addObject(oppHP);
+
+        myHP = new ScreenHPBar(800, 550, MainActivity.getGameState().getPlayerMe());
+        ScreenManager.getInstance().addObject(myHP);
+
         MessageRouter.getInstance().registerListenerAny(this);
+
+        MessageRouter.getInstance().registerListener(new IMessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                for (ScreenCard card : cards) {
+                    card.setWasClicked(false);
+                }
+                ScreenManager.getInstance().getSelectedCard().setWasClicked(true);
+            }
+        }, MessageType.UnclickCard);
+
+        MessageRouter.getInstance().registerListener(new IMessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                ScreenCard temp = null;
+                synchronized(ScreenManager.getInstance().getObjects()) {
+                    for (int i = 0; i < cards.size(); ++i) {
+                        if (cards.get(i).isWasClicked()) {
+                            temp = cards.get(i);
+                            ScreenManager.getInstance().removeObject(temp);
+                            MainActivity.getGameState().getPlayerMe().getHand().removeCard(i);
+                            break;
+                        }
+                    }
+                    cards.remove(temp);
+                }
+            }
+        }, MessageType.DisCard);
     }
 
     public void setRunning(boolean running) {
@@ -87,6 +128,25 @@ public class GameThread extends Thread implements IMessageListener {
             long sleepTime = (TIMESTEP_NS - dt) / 1000000;
             if(sleepTime > 0) {
                 SystemClock.sleep(sleepTime);
+            }
+
+            // Replacing hand after playing 2 cards
+            if(cards.size() == 2) {
+                ScreenCard temp;
+                for(int i = cards.size() - 1; i >= 0; --i) {
+                    temp = cards.get(i);
+                    ScreenManager.getInstance().removeObject(temp);
+                    MainActivity.getGameState().getPlayerMe().getHand().removeCard(i);
+                    cards.remove(temp);
+                }
+                for(int i=0; i < Hand.MAX_CARDS; ++i) {
+                    if(MainActivity.getGameState().getPlayerMe().getDeck().getCards().size() == 0) {
+                        MainActivity.getGameState().getPlayerMe().setDeck(new Deck(MainActivity.getGameState().getPlayerMe()));
+                    }
+                    MainActivity.getGameState().getPlayerMe().drawCard();
+                    cards.addElement(new ScreenCard(20 + i * ScreenCard.CARD_W, 690, MainActivity.getGameState().getPlayerMe().getHand().getCard(i)));
+                    ScreenManager.getInstance().addObject(cards.get(i));
+                }
             }
         }
     }

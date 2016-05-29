@@ -18,6 +18,20 @@ public class CardActions {
                 playShoot(message.sender, message.target);
             }
         }, MessageType.PlayCardShoot);
+
+        MessageRouter.getInstance().registerListener(new IMessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                playAim(message.sender);
+            }
+        }, MessageType.PlayCardAim);
+
+        MessageRouter.getInstance().registerListener(new IMessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                playHeal(message.sender);
+            }
+        }, MessageType.PlayCardHeal);
     }
 
     public void playShoot(Player caster, Player target) {
@@ -29,5 +43,13 @@ public class CardActions {
         if(hitChance > dodgeChance) {
             target.damage(1);
         }
+    }
+
+    public void playAim(Player caster) {
+        caster.setAccuracy(caster.getAccuracy() + 1);
+    }
+
+    public void playHeal(Player caster) {
+        caster.setHp(caster.getHp() + 1);
     }
 }

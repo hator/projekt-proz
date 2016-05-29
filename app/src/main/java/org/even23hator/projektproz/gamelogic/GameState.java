@@ -15,7 +15,7 @@ public class GameState {
         myTurn = true; // TODO depends on who begins
         playerMe = new Player();
         playerOther = new Player();
-        info = new String("Pojedynek rozpoczęty.");
+        info = new String("Duel started.");
         cardActions = new CardActions();
     }
 

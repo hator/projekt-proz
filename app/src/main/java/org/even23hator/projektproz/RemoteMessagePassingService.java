@@ -177,9 +177,10 @@ public class RemoteMessagePassingService extends Service {
         public void run() {
             while(!Thread.currentThread().isInterrupted()) {
                 org.even23hator.projektproz.message.Message message = receiveFromRemote();
-                Log.d("XD", "received message");
+                Log.d("XD", "received messageQQQ");
                 if(message == null) {
                     // error
+                    Log.d("XD", "null message");
                     break;
                 }
                 MessageRouter.getInstance().routeMessage(message);
@@ -198,8 +199,6 @@ public class RemoteMessagePassingService extends Service {
             }
         }
     }
-
-
 
     private class TransmittingRunnable implements Runnable, IMessageListener {
         private final ArrayBlockingQueue<org.even23hator.projektproz.message.Message> messageQueue = new ArrayBlockingQueue<>(16);

@@ -6,5 +6,6 @@ package org.even23hator.projektproz.gamelogic;
 public enum CardType {
     Shoot,
     Aim,
+    Heal,
 
 }

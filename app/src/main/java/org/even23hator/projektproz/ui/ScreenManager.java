@@ -23,8 +23,9 @@ public class ScreenManager {
         return instance;
     }
 
-
     private List<IScreenObject> objects;
+
+    private ScreenCard selectedCard = null;
 
 
     private ScreenManager() {
@@ -35,19 +36,25 @@ public class ScreenManager {
         objects.add(obj);
     }
 
+    public void removeObject(IScreenObject obj) {
+        objects.remove(obj);
+    }
+
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == event.ACTION_DOWN) {
             // FIXME remove
-            MessageRouter.getInstance().routeMessage(new Message(MessageType.PlayCardShoot,
+            /*MessageRouter.getInstance().routeMessage(new Message(MessageType.PlayCardShoot,
                     MainActivity.getGameState().getPlayerMe(),
                     MainActivity.getGameState().getPlayerOther()
-                    ));
+                    ));*/
 
             // TODO(hator): this can be done much faster (in fact logarithmic complexity) if using
             //              space partitioning eg. QuadTree
             for (IScreenObject obj : objects) {
                 if(obj.getBounds().contains((int)event.getX(), (int)event.getY())) {
                     obj.onClick();
+                    if(obj.getClass() == ScreenCard.class)
+                        setSelectedCard((ScreenCard)obj);
                     break;
                 }
             }
@@ -57,8 +64,22 @@ public class ScreenManager {
     }
 
     public void draw(Canvas canvas) {
-        for(IScreenObject so : objects) {
-            so.draw(canvas);
+        synchronized(objects) {
+            for (IScreenObject so : objects) {
+                so.draw(canvas);
+            }
         }
+    }
+
+    public ScreenCard getSelectedCard() {
+        return selectedCard;
+    }
+
+    public void setSelectedCard(ScreenCard selectedCard) {
+        this.selectedCard = selectedCard;
+    }
+
+    public List<IScreenObject> getObjects() {
+        return objects;
     }
 }

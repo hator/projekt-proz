@@ -6,6 +6,10 @@ package org.even23hator.projektproz.message;
 public enum MessageType {
     PlayCardShoot(false),
     PlayCardAim(false),
+    PlayCardHeal(false),
+
+    UnclickCard(true),
+    DisCard(true),
 
 
     RemotePlayerConnected(false),

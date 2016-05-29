@@ -1,9 +1,11 @@
 package org.even23hator.projektproz.ui;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 import org.even23hator.projektproz.MainActivity;
 import org.even23hator.projektproz.gamelogic.CardType;
@@ -23,34 +25,27 @@ public class ScreenCard implements IScreenObject {
     private boolean wasClicked = false;
     private CardType card;
     private GameState state;
+    private Bitmap image;
 
     public ScreenCard(int x, int y, CardType _card) {
         this.x = x;
         this.y = y;
         card = _card;
         state = MainActivity.getGameState();
+        image = MainActivity.getGameView().getCardImages().get(_card);
     }
 
     @Override
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
 
-        if(wasClicked) {paint.setColor(Color.RED);}
-        else {paint.setColor(Color.BLACK);}
+        if(wasClicked) {
+            paint.setColor(Color.YELLOW);
+            paint.setStrokeWidth(10);
+            canvas.drawRect(x, y, x + CARD_W, y + CARD_H, paint);}
 
-        paint.setStrokeWidth(10);
-        canvas.drawRect(x, y, x + CARD_W, y + CARD_H, paint);
-
-        paint.setStrokeWidth(0);
-        paint.setColor(Color.YELLOW);
-        canvas.drawRect(x + 10, y + 115, x + CARD_W - 10, y + CARD_H - 10, paint);
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(x + 10, y + 10, x + CARD_W - 10, y + 110, paint);
-
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(40);
-        canvas.drawText(card.toString(), x + 15, y + 70, paint);
-        canvas.drawText(wasClicked ? "Clicked" : "EFFECT", x+15, y+180, paint);
+        Rect r = new Rect(x + 10, y + 10, x + CARD_W - 10, y + CARD_H - 10);
+        canvas.drawBitmap(image, null, r, paint);
     }
 
     @Override
@@ -65,13 +60,24 @@ public class ScreenCard implements IScreenObject {
 
     @Override
     public void onClick() {
-        if(!wasClicked) {
-            MessageRouter.getInstance().routeMessage(
-                    new Message(messageTypeFromCardType(this.card),
-                                state.getPlayerMe(),
-                                state.getPlayerOther()));
+        Log.d("Click", "Click");
+        if(wasClicked) {
+            MessageRouter.getInstance().routeMessage(new Message(
+                    messageTypeFromCardType(this.card),
+                    state.getPlayerMe(),
+                    state.getPlayerOther()));
+
+            MessageRouter.getInstance().routeMessage(new Message(
+                    MessageType.DisCard,
+                    state.getPlayerMe(),
+                    state.getPlayerOther()));
         }
-        wasClicked = true;
+        else {
+            MessageRouter.getInstance().routeMessage(new Message(
+                    MessageType.UnclickCard,
+                    state.getPlayerMe(),
+                    state.getPlayerOther()));
+        }
     }
 
     private MessageType messageTypeFromCardType(CardType card) {
@@ -80,7 +86,17 @@ public class ScreenCard implements IScreenObject {
                 return MessageType.PlayCardShoot;
             case Aim:
                 return MessageType.PlayCardAim;
+            case Heal:
+                return MessageType.PlayCardHeal;
         }
         return null;
+    }
+
+    public boolean isWasClicked() {
+        return wasClicked;
+    }
+
+    public void setWasClicked(boolean wasClicked) {
+        this.wasClicked = wasClicked;
     }
 }

@@ -9,7 +9,7 @@ import org.even23hator.projektproz.message.Message;
  * Created by Kamil on 2016-04-17.
  */
 public class Player {
-    private static final int MAX_HP = 3;
+    public static final int MAX_HP = 3;
     private static final double INIT_ACC = 5;
     private static final double INIT_DODGE = 4;
 
@@ -28,7 +28,8 @@ public class Player {
     }
 
     public void setHp(int _hp) {
-        hp = _hp;
+        if(!(_hp > MAX_HP))
+            hp = _hp;
     }
 
     public int getHp() {
