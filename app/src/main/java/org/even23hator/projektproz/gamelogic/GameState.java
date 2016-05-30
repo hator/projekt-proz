@@ -12,11 +12,12 @@ public class GameState {
     private CardActions cardActions;
 
     public GameState() {
-        playerMe = new Player();
-        playerOther = new Player();
-        active = null;
-        info = new String("Duel started.");
-        cardActions = new CardActions();
+     reset();
+    }
+
+    public GameState(Player _active) {
+        reset();
+        active = _active;
     }
 
     public Player getActive() {
@@ -41,5 +42,13 @@ public class GameState {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public void reset() {
+        playerMe = new Player();
+        playerOther = new Player();
+        active = null;
+        info = new String("Duel started.");
+        cardActions = new CardActions();
     }
 }

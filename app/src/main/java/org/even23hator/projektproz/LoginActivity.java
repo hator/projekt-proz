@@ -22,10 +22,12 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
-    private boolean serviceBound;
-    private Messenger service = null;
 
-    private ServiceConnection connection = new ServiceConnection() {
+    private static boolean serviceBound;
+
+    private static Messenger service = null;
+
+    private static ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder _service) {
             service = new Messenger(_service);
@@ -79,20 +81,31 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, RemoteMessagePassingService.class);
-        intent.putExtra(RemoteMessagePassingService.INTENT_ACTIVITY_MESSENGER, receiver);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        //if(getService() == null) {
+            Intent intent = new Intent(this, RemoteMessagePassingService.class);
+            intent.putExtra(RemoteMessagePassingService.INTENT_ACTIVITY_MESSENGER, receiver);
+            if(service == null) {
+                ComponentName service = startService(new Intent(this, RemoteMessagePassingService.class));
+            }
+            bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        //}
         Log.d("Login", "onStart");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        /* if(serviceBound) {
+         if(serviceBound) {
             unbindService(connection);
             serviceBound = false;
-        }*/
+        }
         Log.d("Login", "onStop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("Login", "onDestroy");
     }
 
     public void onCreateGameClicked(View view) {
@@ -135,5 +148,21 @@ public class LoginActivity extends AppCompatActivity {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ServiceConnection getConnection() {
+        return connection;
+    }
+
+    public static boolean isServiceBound() {
+        return serviceBound;
+    }
+
+    public static void setServiceBound(boolean serviceBound) {
+        LoginActivity.serviceBound = serviceBound;
+    }
+
+    public static Messenger getService() {
+        return service;
     }
 }

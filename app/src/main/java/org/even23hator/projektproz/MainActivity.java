@@ -1,11 +1,18 @@
 package org.even23hator.projektproz;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
 import org.even23hator.projektproz.gamelogic.GameState;
+import org.even23hator.projektproz.gamelogic.Player;
+import org.even23hator.projektproz.message.MessageRouter;
+import org.even23hator.projektproz.message.MessageType;
+import org.even23hator.projektproz.ui.ScreenManager;
 
 
 public class MainActivity extends Activity {
@@ -21,9 +28,24 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        //gameState = new GameState(getGameState().getActive());
+        if(RemoteMessagePassingService.isServer()) {
+            Player first = (Math.random() > 0.5) ? MainActivity.getGameState().getPlayerMe() : MainActivity.getGameState().getPlayerOther();
+            MessageRouter.getInstance().routeMessage(new org.even23hator.projektproz.message.Message(MessageType.FirstPlayer, first, null));
+        }
         gameView = new GameView(this);
-        gameThread = new GameThread();
+        gameThread = new GameThread(this);
         setContentView(gameView);
+        Log.d("Main", "onCreate");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Intent intent = new Intent(this, RemoteMessagePassingService.class);
+        //bindService(intent, LoginActivity.getConnection(), Context.BIND_AUTO_CREATE);
+
+        Log.d("Main", "onStart");
     }
 
     @Override
@@ -33,6 +55,7 @@ public class MainActivity extends Activity {
         gameThread.setRunning(true);
 
         gameThread.start();
+        Log.d("Main", "onResume");
     }
 
     @Override
@@ -51,6 +74,25 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
             }
         }
+        Log.d("Main", "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        /*if(LoginActivity.isServiceBound()) {
+            unbindService(LoginActivity.getConnection());
+            LoginActivity.setServiceBound(false);
+        }*/
+        Log.d("Main", "onStop");
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ScreenManager.getInstance().reset();
+        MessageRouter.getInstance().reset();
+        gameState.reset();
+        Log.d("Main", "onDestroy");
     }
 
     public static GameState getGameState() {

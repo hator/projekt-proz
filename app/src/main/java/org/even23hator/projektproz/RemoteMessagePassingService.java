@@ -51,11 +51,12 @@ public class RemoteMessagePassingService extends Service {
     private volatile Socket socket;
     private Thread receivingThread;
     private Thread transmittingThread;
+    private Thread connectionThread;
 
     private MessageHandler messageHandler;
 
-    private Player first = null;
-    
+    private static boolean server = false;
+
     @Override
     public void onCreate() {
         HandlerThread thread = new HandlerThread(TAG + "Thread", android.os.Process.THREAD_PRIORITY_BACKGROUND);
@@ -119,7 +120,7 @@ public class RemoteMessagePassingService extends Service {
                     ss.setReuseAddress(true);
                     ss.setSoTimeout(30000); // 30 seconds
                     socket = ss.accept();
-                    first = (Math.random() > 0.5) ? MainActivity.getGameState().getPlayerMe() : MainActivity.getGameState().getPlayerOther();
+                    server = true;
 
                 } catch (SocketTimeoutException e) {
                     reportToActivity(-2);
@@ -132,6 +133,7 @@ public class RemoteMessagePassingService extends Service {
             } else {
                 //Client
                 socket = new Socket();
+                server = false;
                 try {
                     socket.connect(new InetSocketAddress(remoteIp, PORT), 5000); // 5 seconds
                 } catch (IOException e) {
@@ -144,9 +146,11 @@ public class RemoteMessagePassingService extends Service {
             try {
                 receivingThread = new Thread(new ReceivingRunnable(socket.getInputStream()));
                 transmittingThread = new Thread(new TransmittingRunnable(socket.getOutputStream()));
+                connectionThread = new Thread(new ConnectionRunnable());
 
                 receivingThread.start();
                 transmittingThread.start();
+                connectionThread.start();
 
                 RemoteMessagePassingService.this.socket = socket;
 
@@ -219,7 +223,6 @@ public class RemoteMessagePassingService extends Service {
 
         public void run() {
             this.onMessage(new org.even23hator.projektproz.message.Message(MessageType.RemotePlayerConnected, null, null));
-            MessageRouter.getInstance().routeMessage(new org.even23hator.projektproz.message.Message(MessageType.FirstPlayer, first, null));
 
             org.even23hator.projektproz.message.Message message;
             while(!Thread.currentThread().isInterrupted()) {
@@ -252,6 +255,18 @@ public class RemoteMessagePassingService extends Service {
         }
     }
 
+    private class ConnectionRunnable implements Runnable {
+        ConnectionRunnable() {}
+
+        @Override
+        public void run() {
+            while(!Thread.currentThread().isInterrupted()) {
+                MessageRouter.getInstance().routeMessage(new org.even23hator.projektproz.message.Message(MessageType.RemotePlayerConnected, null, null));
+                SystemClock.sleep(2000);
+             }
+        }
+    }
+
     private Player playerNumberIncoming(byte b) {
         switch(b) {
             case 1:
@@ -271,5 +286,9 @@ public class RemoteMessagePassingService extends Service {
             return 2;
         }
         return 0; // eg. null
+    }
+
+    public static boolean isServer() {
+        return server;
     }
 }

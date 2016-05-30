@@ -1,5 +1,6 @@
 package org.even23hator.projektproz;
 
+import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -40,12 +41,18 @@ public class GameThread extends Thread implements IMessageListener {
     public volatile double fps;
     public volatile long dt;
 
+    private ConnectionTimer timer;
+    private Activity activity;
+
     private Vector<ScreenCard> cards;
     private ScreenHPBar oppHP, myHP;
 
-    public GameThread() {
+    public GameThread(MainActivity activity) {
         super();
         this.running = true;
+
+        timer = new ConnectionTimer();
+        this.activity = activity;
 
         cards = new Vector<>();
         for(int i=0; i < Hand.MAX_CARDS; ++i) {
@@ -141,6 +148,7 @@ public class GameThread extends Thread implements IMessageListener {
             // NOTE(hator): for game mechanics update we use fixed timestep for simulation stability
             //      we accumulate time in dt and use it up for updates
             dt += elapsedTime;
+
             //Log.d("GameThread", "elapsed " + elapsedTime / 1e6f + ", delta " + dt / 1e6f);
             while(dt >= TIMESTEP_NS) {
                 dt -= TIMESTEP_NS;
@@ -156,20 +164,22 @@ public class GameThread extends Thread implements IMessageListener {
 
             // Replacing hand after playing 2 cards
             if(cards.size() == 2) {
-                ScreenCard temp;
-                for(int i = cards.size() - 1; i >= 0; --i) {
-                    temp = cards.get(i);
-                    ScreenManager.getInstance().removeObject(temp);
-                    MainActivity.getGameState().getPlayerMe().getHand().removeCard(i);
-                    cards.remove(temp);
-                }
-                for(int i=0; i < Hand.MAX_CARDS; ++i) {
-                    if(MainActivity.getGameState().getPlayerMe().getDeck().getCards().size() == 0) {
-                        MainActivity.getGameState().getPlayerMe().setDeck(new Deck(MainActivity.getGameState().getPlayerMe()));
+                synchronized(ScreenManager.getInstance().getObjects()) {
+                    ScreenCard temp;
+                    for (int i = cards.size() - 1; i >= 0; --i) {
+                        temp = cards.get(i);
+                        ScreenManager.getInstance().removeObject(temp);
+                        MainActivity.getGameState().getPlayerMe().getHand().removeCard(i);
+                        cards.remove(temp);
                     }
-                    MainActivity.getGameState().getPlayerMe().drawCard();
-                    cards.addElement(new ScreenCard(20 + i * ScreenCard.CARD_W, 690, MainActivity.getGameState().getPlayerMe().getHand().getCard(i)));
-                    ScreenManager.getInstance().addObject(cards.get(i));
+                    for (int i = 0; i < Hand.MAX_CARDS; ++i) {
+                        if (MainActivity.getGameState().getPlayerMe().getDeck().getCards().size() == 0) {
+                            MainActivity.getGameState().getPlayerMe().setDeck(new Deck(MainActivity.getGameState().getPlayerMe()));
+                        }
+                        MainActivity.getGameState().getPlayerMe().drawCard();
+                        cards.addElement(new ScreenCard(20 + i * ScreenCard.CARD_W, 690, MainActivity.getGameState().getPlayerMe().getHand().getCard(i)));
+                        ScreenManager.getInstance().addObject(cards.get(i));
+                    }
                 }
             }
 
@@ -181,8 +191,8 @@ public class GameThread extends Thread implements IMessageListener {
 
     private void update(long dt) {
         MessageRouter.getInstance().update();
+        timer.update(dt / 1000000, activity);
     }
-
 
     @Override
     public void onMessage(Message message) {

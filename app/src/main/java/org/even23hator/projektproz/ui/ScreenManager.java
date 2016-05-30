@@ -82,4 +82,9 @@ public class ScreenManager {
     public List<IScreenObject> getObjects() {
         return objects;
     }
+
+    public void reset() {
+        selectedCard = null;
+        objects.clear();
+    }
 }

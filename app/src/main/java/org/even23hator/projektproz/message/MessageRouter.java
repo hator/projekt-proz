@@ -82,4 +82,9 @@ public class MessageRouter extends Observable {
     public void setPostUpdateHook(Runnable runnable) {
         postUpdateHook = runnable;
     }
+
+    public void reset() {
+        listeners.clear();
+        messageQueue.clear();
+    }
 }

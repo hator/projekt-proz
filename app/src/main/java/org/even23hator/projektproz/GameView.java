@@ -77,7 +77,7 @@ public class GameView extends SurfaceView {
         paint.setColor(Color.argb(255, 0, 0, 0));
         paint.setTextSize(45);
 
-        //.drawText("delta " + gameThread.dt / 1000000.f + "ms", 20, 40, paint);
+        //canvas.drawText("delta " + gameThread.dt / 1000000.f + "ms", 20, 40, paint);
         //canvas.drawText("FPS " + gameThread.fps, 20, 100, paint);
         canvas.drawText(MainActivity.getGameState().getInfo(), 20, 160, paint);
 
