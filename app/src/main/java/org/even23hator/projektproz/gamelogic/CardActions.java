@@ -22,6 +22,21 @@ public class CardActions {
         MessageRouter.getInstance().registerListener(new IMessageListener() {
             @Override
             public void onMessage(Message message) {
+                Log.d("Shoot", "hit");
+                hitShoot(message.sender, message.target);
+            }
+        }, MessageType.HitCardShoot);
+
+        MessageRouter.getInstance().registerListener(new IMessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                Log.d("Shoot", "missed");
+            }
+        }, MessageType.MissedCardShoot);
+
+        MessageRouter.getInstance().registerListener(new IMessageListener() {
+            @Override
+            public void onMessage(Message message) {
                 playAim(message.sender);
             }
         }, MessageType.PlayCardAim);
@@ -41,8 +56,21 @@ public class CardActions {
         Log.d("CardShoot", "hitChance: " + hitChance + ", dodgeChance: " + dodgeChance);
 
         if(hitChance > dodgeChance) {
-            target.damage(1);
+            MessageRouter.getInstance().routeMessage(new Message(
+                   MessageType.HitCardShoot,
+                    caster,
+                    target));
         }
+        else {
+            MessageRouter.getInstance().routeMessage(new Message(
+                    MessageType.MissedCardShoot,
+                    caster,
+                    target));
+        }
+    }
+
+    public void hitShoot(Player caster, Player target) {
+        target.damage(1);
     }
 
     public void playAim(Player caster) {

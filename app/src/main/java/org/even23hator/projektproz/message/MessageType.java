@@ -4,7 +4,10 @@ package org.even23hator.projektproz.message;
  * Created by hator on 17.04.16.
  */
 public enum MessageType {
-    PlayCardShoot(false),
+    PlayCardShoot(true),
+    HitCardShoot(false),
+    MissedCardShoot(false),
+
     PlayCardAim(false),
     PlayCardHeal(false),
 
@@ -13,7 +16,9 @@ public enum MessageType {
 
 
     RemotePlayerConnected(false),
-    CommunicationError(true);
+    CommunicationError(true),
+    FirstPlayer(false),
+    ChangeTurn(false);
 
 
     private boolean internal;

@@ -4,33 +4,27 @@ package org.even23hator.projektproz.gamelogic;
  * Created by hator on 20.03.16.
  */
 public class GameState {
-    private Player playerMe, playerOther;
-    private int turnNr;
-    private boolean myTurn;
+    private Player playerMe;
+    private Player playerOther;
+
+    private Player active;
     private String info;
     private CardActions cardActions;
 
     public GameState() {
-        turnNr = 0;
-        myTurn = true; // TODO depends on who begins
         playerMe = new Player();
         playerOther = new Player();
+        active = null;
         info = new String("Duel started.");
         cardActions = new CardActions();
     }
 
-    public void nextTurnNr() {
-        ++turnNr;
+    public Player getActive() {
+        return active;
     }
 
-    public int getTurnNr() {
-        return turnNr;
-    }
-
-    public Player getTurnPlayer() {
-        if(myTurn)
-            return playerMe;
-        return playerOther;
+    public void setActive(Player active) {
+        this.active = active;
     }
 
     public Player getPlayerMe() {

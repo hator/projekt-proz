@@ -81,7 +81,7 @@ public class GameThread extends Thread implements IMessageListener {
                         if (cards.get(i).isWasClicked()) {
                             temp = cards.get(i);
                             ScreenManager.getInstance().removeObject(temp);
-                            MainActivity.getGameState().getPlayerMe().getHand().removeCard(i);
+                            message.sender.getHand().removeCard(i);
                             break;
                         }
                     }
@@ -89,6 +89,30 @@ public class GameThread extends Thread implements IMessageListener {
                 }
             }
         }, MessageType.DisCard);
+
+        MessageRouter.getInstance().registerListener(new IMessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                if(message.sender != null) {
+                    MainActivity.getGameState().setActive(message.sender);
+                    Log.d("First", message.sender.toString());
+                }
+            }
+        }, MessageType.FirstPlayer);
+
+        MessageRouter.getInstance().registerListener(new IMessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                if(message.isRemote()) {
+                    MainActivity.getGameState().setActive(message.target);
+                    Log.d("Change on me", message.sender.toString());
+                }
+                else {
+                    MainActivity.getGameState().setActive(message.target);
+                    Log.d("Change on other", message.sender.toString());
+                }
+            }
+        }, MessageType.ChangeTurn);
     }
 
     public void setRunning(boolean running) {
@@ -147,6 +171,10 @@ public class GameThread extends Thread implements IMessageListener {
                     cards.addElement(new ScreenCard(20 + i * ScreenCard.CARD_W, 690, MainActivity.getGameState().getPlayerMe().getHand().getCard(i)));
                     ScreenManager.getInstance().addObject(cards.get(i));
                 }
+            }
+
+            if(MainActivity.getGameState().getPlayerMe().getAlive() == false || MainActivity.getGameState().getPlayerOther().getAlive() == false) {
+                MainActivity.getGameState().setActive(null);
             }
         }
     }

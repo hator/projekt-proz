@@ -71,6 +71,11 @@ public class ScreenCard implements IScreenObject {
                     MessageType.DisCard,
                     state.getPlayerMe(),
                     state.getPlayerOther()));
+
+            MessageRouter.getInstance().routeMessage(new Message(
+                    MessageType.ChangeTurn,
+                    state.getPlayerMe(),
+                    state.getPlayerOther()));
         }
         else {
             MessageRouter.getInstance().routeMessage(new Message(

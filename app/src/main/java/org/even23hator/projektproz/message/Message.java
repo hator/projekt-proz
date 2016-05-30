@@ -9,6 +9,7 @@ public class Message {
     public MessageType type;
     public Player sender;
     public Player target;
+
     private boolean remote;
 
     public Message(MessageType type, Player sender, Player target) {
@@ -26,7 +27,11 @@ public class Message {
     }
 
     public boolean isInternal() {
-        return this.type.isInternal() && !remote;
+        return this.type.isInternal();
+    }
+
+    public boolean isRemote() {
+        return remote;
     }
 
     @Override

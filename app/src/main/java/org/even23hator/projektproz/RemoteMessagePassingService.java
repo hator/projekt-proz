@@ -54,7 +54,8 @@ public class RemoteMessagePassingService extends Service {
 
     private MessageHandler messageHandler;
 
-
+    private Player first = null;
+    
     @Override
     public void onCreate() {
         HandlerThread thread = new HandlerThread(TAG + "Thread", android.os.Process.THREAD_PRIORITY_BACKGROUND);
@@ -118,6 +119,8 @@ public class RemoteMessagePassingService extends Service {
                     ss.setReuseAddress(true);
                     ss.setSoTimeout(30000); // 30 seconds
                     socket = ss.accept();
+                    first = (Math.random() > 0.5) ? MainActivity.getGameState().getPlayerMe() : MainActivity.getGameState().getPlayerOther();
+
                 } catch (SocketTimeoutException e) {
                     reportToActivity(-2);
                     return null;
@@ -216,6 +219,7 @@ public class RemoteMessagePassingService extends Service {
 
         public void run() {
             this.onMessage(new org.even23hator.projektproz.message.Message(MessageType.RemotePlayerConnected, null, null));
+            MessageRouter.getInstance().routeMessage(new org.even23hator.projektproz.message.Message(MessageType.FirstPlayer, first, null));
 
             org.even23hator.projektproz.message.Message message;
             while(!Thread.currentThread().isInterrupted()) {
@@ -242,7 +246,7 @@ public class RemoteMessagePassingService extends Service {
 
         @Override
         public void onMessage(org.even23hator.projektproz.message.Message message) {
-            if(!message.isInternal()) {
+            if(!message.isRemote() && !message.isInternal()) {
                 messageQueue.add(message);
             }
         }

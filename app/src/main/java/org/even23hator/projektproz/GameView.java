@@ -54,8 +54,13 @@ public class GameView extends SurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        invalidate();
-        return ScreenManager.getInstance().onTouchEvent(event);
+        if(MainActivity.getGameState().getActive() == MainActivity.getGameState().getPlayerMe()) {
+            invalidate();
+            return ScreenManager.getInstance().onTouchEvent(event);
+        }
+        else {
+            return true;
+        }
     }
 
 
@@ -100,6 +105,12 @@ public class GameView extends SurfaceView {
             paint.setColor(Color.WHITE);
             paint.setTextSize(200);
             canvas.drawText("YOU WON!!!", 350, 400, paint);
+        }
+
+        if(!MainActivity.getGameState().getPlayerMe().getAlive()) {
+            paint.setColor(Color.WHITE);
+            paint.setTextSize(200);
+            canvas.drawText("YOU LOST!!!", 350, 400, paint);
         }
 
     }
