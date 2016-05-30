@@ -74,13 +74,6 @@ public class GameView extends SurfaceView {
         Rect r = new Rect(0, 0, 1920, 1080);
         canvas.drawBitmap(getBitmaps().get(BitmapType.Background), null, r, paint);
 
-        paint.setColor(Color.argb(255, 0, 0, 0));
-        paint.setTextSize(45);
-
-        //canvas.drawText("delta " + gameThread.dt / 1000000.f + "ms", 20, 40, paint);
-        //canvas.drawText("FPS " + gameThread.fps, 20, 100, paint);
-        canvas.drawText(MainActivity.getGameState().getInfo(), 20, 160, paint);
-
         // Draw players
         r = new Rect(1500, 25, 1920, 600);
         canvas.drawBitmap(getBitmaps().get(BitmapType.Opponent), null, r, paint);
@@ -98,9 +91,6 @@ public class GameView extends SurfaceView {
         canvas.drawLine(900, 0, 1200, 670, paint);
         canvas.drawLine(1200, 670, 1200, 1080, paint);
 
-        r = new Rect(1450, 700, 1720, 780);
-        canvas.drawBitmap(getBitmaps().get(BitmapType.Menu), null, r, paint);
-
         if(!MainActivity.getGameState().getPlayerOther().getAlive()) {
             paint.setColor(Color.WHITE);
             paint.setTextSize(200);
@@ -113,6 +103,17 @@ public class GameView extends SurfaceView {
             canvas.drawText("YOU LOST!!!", 350, 400, paint);
         }
 
+        paint.setTextSize(75);
+        canvas.drawText("Messages", 1280, 740, paint);
+
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(50);
+        if(MainActivity.getGameState().getActive() == MainActivity.getGameState().getPlayerOther()) {
+            canvas.drawText("Waiting for opponent...", 1280, 800, paint);
+        }
+        else {
+            canvas.drawText("It's your turn.", 1280, 800, paint);
+        }
     }
 
     public void loadBitmaps() {
@@ -139,14 +140,6 @@ public class GameView extends SurfaceView {
         i = R.drawable.heartempty1;
         b = BitmapFactory.decodeResource(res, i);
         bitmaps.put(BitmapType.EmptyHeart, b);
-
-        i = R.drawable.bar;
-        b = BitmapFactory.decodeResource(res, i);
-        bitmaps.put(BitmapType.Bar, b);
-
-        i = R.drawable.menu;
-        b = BitmapFactory.decodeResource(res, i);
-        bitmaps.put(BitmapType.Menu, b);
 
         i = R.drawable.opponent2;
         b = BitmapFactory.decodeResource(res, i);
