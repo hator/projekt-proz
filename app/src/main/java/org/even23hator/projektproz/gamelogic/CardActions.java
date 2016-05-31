@@ -9,6 +9,11 @@ import org.even23hator.projektproz.message.MessageType;
 
 /**
  * Created by hator on 18.05.16.
+ *
+ * Klasa opisuje akcje po zagraniu każdej karty.
+ * W konstruktorze rejestruje nasłuchiwaczy, którzy odbierają wiadomości od zagranych ScreenCard.
+ * Po nadejściu komunikatu wywołują odpowiednią funkcję, która realizuje dzialanie karty w logice gry. (modyfikacja gameState)
+ *
  */
 public class CardActions {
     public CardActions() {

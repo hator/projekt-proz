@@ -10,6 +10,10 @@ import org.even23hator.projektproz.message.MessageType;
 
 /**
  * Created by Kamil on 2016-05-30.
+ *
+ * Klasa licznika wykorzystywanego przy sprawdzaniu połączenia.
+ * Wiadomości z drugiego urządzenia powodują ponowne nastawienie licznika.
+ * W momencie gdy czas dojdzie do zera, zamyka główne okno gry (Main Activity) i wraca do ekranu startowego (loginActivity).
  */
 public class ConnectionTimer implements IMessageListener {
     private long timer; // milliseconds

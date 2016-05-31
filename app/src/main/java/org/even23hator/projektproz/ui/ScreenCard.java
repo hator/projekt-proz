@@ -16,6 +16,13 @@ import org.even23hator.projektproz.message.MessageType;
 
 /**
  * Created by hator on 01.05.16.
+ *
+ * Klasa opisująca kartę, wyświetlaną na ekranie.
+ * Określony jest jej wymiar, obrazek, oraz typ.
+ * Ten ostatni pozwala na wykonanie odpowiedniej dal karty akcji.
+ * W chwili dotyku karty na ekranie, zostaje ona zaznaczona, a po powtórzeniu akcji zagrana.
+ * Całość jest obsługiwana przez zestaw wiadomości.
+ *
  */
 public class ScreenCard implements IScreenObject {
     public static final int CARD_W = 280;

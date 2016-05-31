@@ -4,6 +4,11 @@ import java.util.Vector;
 
 /**
  * Created by Kamil on 2016-04-17.
+ *
+ * Klasa opisująca karty w ręce gracza.
+ * Charakteryzuje ją maksymalnaliczba kart, które można trzymać o raz vector CardType.
+ * W konstruktorze dobierane są karty z talii, aż do zapełnienia ręki.
+ *
  */
 public class Hand {
     public static final int MAX_CARDS = 4;

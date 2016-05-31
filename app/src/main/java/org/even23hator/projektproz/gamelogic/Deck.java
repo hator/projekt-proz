@@ -5,6 +5,10 @@ import java.util.Vector;
 
 /**
  * Created by Kamil on 2016-04-17.
+ *
+ * Klasa reprezentująca talię gracza. Zawiera karty, które mogą być dobierane do ręki.
+ * Zrealizowano to przy pomocy vectora CardType.
+ * W momencie tworzenia do talii dodawany jest stały komplet kart, które następnie są tasowane.
  */
 public class Deck {
     private Vector<CardType> cards;

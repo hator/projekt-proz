@@ -13,6 +13,12 @@ import java.util.List;
 
 /**
  * Created by hator on 01.05.16.
+ *
+ * Klasa opisująca obsługę wyświetlania IScreenObject.
+ * Zawiera listę wszystkich takich obiektów.
+ * Zależnie od ich implementacji funkcji onDraw() rysuje je na ekranie.
+ * Odpowiada również za odbieranie onTouchEvent i wywoływanie naciśniętego IScreenObject.
+ *
  */
 public class ScreenManager {
     private static ScreenManager instance = null;
@@ -42,12 +48,6 @@ public class ScreenManager {
 
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == event.ACTION_DOWN) {
-            // FIXME remove
-            /*MessageRouter.getInstance().routeMessage(new Message(MessageType.PlayCardShoot,
-                    MainActivity.getGameState().getPlayerMe(),
-                    MainActivity.getGameState().getPlayerOther()
-                    ));*/
-
             // TODO(hator): this can be done much faster (in fact logarithmic complexity) if using
             //              space partitioning eg. QuadTree
             for (IScreenObject obj : objects) {

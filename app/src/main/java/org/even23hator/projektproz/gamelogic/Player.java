@@ -7,6 +7,11 @@ import org.even23hator.projektproz.message.Message;
 
 /**
  * Created by Kamil on 2016-04-17.
+ *
+ * Klasa opisująca gracza.
+ * Przechowuje statystyki takie jak: życie, celność, uniki.
+ * W kontruktorze tworzone są obiekty typu Deck i Hand.
+ *
  */
 public class Player {
     public static final int MAX_HP = 3;
@@ -83,10 +88,4 @@ public class Player {
     public Hand getHand() {
         return hand;
     }
-
-    public void setHand(Hand hand) {
-        this.hand = hand;
-    }
-
-
 }

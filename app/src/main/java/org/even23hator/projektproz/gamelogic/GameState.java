@@ -2,6 +2,11 @@ package org.even23hator.projektproz.gamelogic;
 
 /**
  * Created by hator on 20.03.16.
+ *
+ * Klasa opisująca aktualny stan rozgrywki.
+ * Przechowuje informacje o obu graczach oraz o tym czyja jest teraz tura.
+ * Funkcja reset() pozwala na wyczszczenie stanu gry.
+ *
  */
 public class GameState {
     private Player playerMe;
@@ -13,11 +18,6 @@ public class GameState {
 
     public GameState() {
      reset();
-    }
-
-    public GameState(Player _active) {
-        reset();
-        active = _active;
     }
 
     public Player getActive() {

@@ -10,6 +10,12 @@ import org.even23hator.projektproz.gamelogic.Player;
 
 /**
  * Created by Kamil on 2016-05-22.
+ *
+ * Klasa opisująca pasek życia gracza.
+ * Składa się on z mniejszcych elementów (serca).
+ * Obiekt ten prezentuje na ekranie faktyczny stan życia i zmienia się w trakcie trwania rozgrywki.
+ * W przeciwieństwie do ScreenCard jego naciśniecie nie pociąga za sobą akcji.
+ *
  */
 public class ScreenHPBar implements IScreenObject{
     private static int HP_S = 100;
