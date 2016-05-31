@@ -8,13 +8,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
 import org.even23hator.projektproz.gamelogic.CardType;
-import org.even23hator.projektproz.message.IMessageListener;
-import org.even23hator.projektproz.message.Message;
 import org.even23hator.projektproz.message.MessageRouter;
 import org.even23hator.projektproz.ui.BitmapType;
 import org.even23hator.projektproz.ui.ScreenManager;
@@ -22,9 +19,13 @@ import org.even23hator.projektproz.ui.ScreenManager;
 import java.util.EnumMap;
 
 
+/**
+ * Widok służący wyświetlaniu rozgrywki.
+ *
+ * Widok jest odrysowywany jeżeli w pętli głównej zostały przetworzone komunikaty, jeżeli nie było
+ * komunikatów, ekran pozostaje niezmieniony.
+ */
 public class GameView extends SurfaceView {
-
-    //private final GameThread gameThread;
 
     private Resources res;
 
@@ -34,9 +35,6 @@ public class GameView extends SurfaceView {
     public GameView(Context context) {
         super(context);
         setFocusable(true);
-
-        //this.gameThread = gameThread;
-
         setWillNotDraw(false);
 
         MessageRouter.getInstance().setPostUpdateHook(new Runnable() {

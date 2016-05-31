@@ -32,6 +32,13 @@ import java.util.Vector;
 
 /**
  * Created by hator on 23.04.16.
+ *
+ * Wątek zawierający główną pętlę gry.
+ *
+ * Inicjalizuje wszystkie niezbędne zmienne, a następnie uruchamia pętlę gry.
+ *
+ * Pętla gry zawiera mechanizm stabilizacji częstotliwości odświerzania. Korzysta ze stałego kroku
+ * całkowania (fixed timestep).
  */
 public class GameThread extends Thread implements IMessageListener {
     public static final int TARGET_FPS = 60;

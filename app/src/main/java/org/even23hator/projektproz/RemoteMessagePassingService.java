@@ -34,6 +34,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by hator on 20.05.16.
+ *
+ * Klasa wymieniająca komunikaty z drugim urządzeniem.
+ *
+ * Service uruchamia wątek nasłuchujący oraz wątek wysyłający, które współpracują z {@link MessageRouter}.
+ * Wszystkie komunikaty, które nie są oznaczone jako wewnętrzne zostają wyłane do drugiego urządzenia,
+ * a wszystkie przychodzące komunikaty są oznaczane jako remote i poprzez MessageRouter przekazane dalej.
  */
 public class RemoteMessagePassingService extends Service {
     public static final String TAG = "RemoteMessagePassing";

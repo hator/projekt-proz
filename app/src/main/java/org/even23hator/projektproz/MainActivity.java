@@ -15,6 +15,11 @@ import org.even23hator.projektproz.message.MessageType;
 import org.even23hator.projektproz.ui.ScreenManager;
 
 
+/**
+ * Główne acvitity gry.
+ *
+ * W tym Activity umiejscowiona jest cała rozgrywka, przechowywany jest stan gry oraz jej widok.
+ */
 public class MainActivity extends Activity {
     private GameThread gameThread;
     private static GameView gameView;
