@@ -4,6 +4,11 @@ import org.even23hator.projektproz.gamelogic.Player;
 
 /**
  * Created by hator on 17.04.16.
+ *
+ * Klasa komunikatu.
+ *
+ * Zawiera typ komunikatu {@link MessageType}, nadawcę oraz odbiorcę, pole remote określające czy
+ * komunikat przyszedł z zewnątrz od drugiego gracza.
  */
 public class Message {
     public MessageType type;

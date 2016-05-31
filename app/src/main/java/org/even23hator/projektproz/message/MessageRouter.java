@@ -14,11 +14,19 @@ import java.util.Set;
 
 /**
  * Created by hator on 17.04.16.
+ *
+ * Centrala przekazywania komunikatów.
+ *
+ * Otrzymane komunikaty ({@link MessageRouter#routeMessage(Message)}) kolejkuje wewnętrznie
+ * i powiadamia zarejestrowanych słuchaczy po wywołaniu {@link MessageRouter#update()}.
+ *
+ * Słuchacze rejestrują się do odpowiednich komunikatów metodą {@link MessageRouter#registerListener(IMessageListener, MessageType)}.
+ *
+ * Implementacja jest thread-safe.
  */
-public class MessageRouter extends Observable {
+public class MessageRouter {
     private static final MessageRouter ourInstance = new MessageRouter();
     private Runnable postUpdateHook;
-    private View postUpdateView;
 
     public static MessageRouter getInstance() {
         return ourInstance;
