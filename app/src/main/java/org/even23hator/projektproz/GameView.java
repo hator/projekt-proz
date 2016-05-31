@@ -93,20 +93,20 @@ public class GameView extends SurfaceView {
 
         if(!MainActivity.getGameState().getPlayerOther().getAlive()) {
             paint.setColor(Color.WHITE);
-            paint.setTextSize(200);
-            canvas.drawText("YOU WON!!!", 350, 400, paint);
+            paint.setTextSize(100);
+            canvas.drawText("YOU WON!!!", 1280, 900, paint);
         }
 
         if(!MainActivity.getGameState().getPlayerMe().getAlive()) {
             paint.setColor(Color.WHITE);
-            paint.setTextSize(200);
-            canvas.drawText("YOU LOST!!!", 350, 400, paint);
+            paint.setTextSize(100);
+            canvas.drawText("YOU LOST!!!", 1280, 900, paint);
         }
 
+        paint.setColor(Color.BLACK);
         paint.setTextSize(75);
         canvas.drawText("Messages", 1280, 740, paint);
 
-        paint.setColor(Color.BLACK);
         paint.setTextSize(50);
         if(MainActivity.getGameState().getActive() == MainActivity.getGameState().getPlayerOther()) {
             canvas.drawText("Waiting for opponent...", 1280, 800, paint);

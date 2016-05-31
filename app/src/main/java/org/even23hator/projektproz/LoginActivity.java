@@ -26,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     private static boolean serviceBound;
 
     private static Messenger service = null;
+    private static ComponentName myService = null;
 
     private static ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -81,14 +82,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //if(getService() == null) {
             Intent intent = new Intent(this, RemoteMessagePassingService.class);
             intent.putExtra(RemoteMessagePassingService.INTENT_ACTIVITY_MESSENGER, receiver);
-            if(service == null) {
-                ComponentName service = startService(new Intent(this, RemoteMessagePassingService.class));
+            if(myService == null) {
+                myService = startService(new Intent(this, RemoteMessagePassingService.class));
             }
             bindService(intent, connection, Context.BIND_AUTO_CREATE);
-        //}
         Log.d("Login", "onStart");
     }
 
@@ -144,25 +143,17 @@ public class LoginActivity extends AppCompatActivity {
         if (!serviceBound) return; // FIXME bind service
         msg.replyTo = this.receiver;
         try {
+            Log.d("yolo", "beforeMessageToService");
             service.send(msg);
+            Log.d("yolo", "afterMessageToService");
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    public static ServiceConnection getConnection() {
-        return connection;
-    }
-
-    public static boolean isServiceBound() {
-        return serviceBound;
-    }
-
-    public static void setServiceBound(boolean serviceBound) {
-        LoginActivity.serviceBound = serviceBound;
-    }
-
-    public static Messenger getService() {
-        return service;
+    @Override
+    public void onBackPressed() {
+        stopService(new Intent(this, RemoteMessagePassingService.class));
+        finish();
     }
 }
