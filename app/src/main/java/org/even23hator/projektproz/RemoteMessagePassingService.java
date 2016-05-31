@@ -55,10 +55,14 @@ public class RemoteMessagePassingService extends Service {
 
     private MessageHandler messageHandler;
 
+    private volatile boolean running;
+
     private static boolean server = false;
 
     @Override
     public void onCreate() {
+        running = true;
+
         HandlerThread thread = new HandlerThread(TAG + "Thread", android.os.Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
 
@@ -76,11 +80,30 @@ public class RemoteMessagePassingService extends Service {
     @Override
     public void onDestroy() {
         Log.d(TAG, "Destroy");
+
+        running = false;
+
+        connectionThread.interrupt();
+        transmittingThread.interrupt();
+        receivingThread.interrupt();
+
         if(socket != null) {
             try {
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+
+        boolean done = false;
+        while(!done) {
+            try {
+                connectionThread.join();
+                transmittingThread.join();
+                receivingThread.join();
+                done = true;
+            } catch (InterruptedException e) {
+                // pass
             }
         }
     }
@@ -182,7 +205,7 @@ public class RemoteMessagePassingService extends Service {
 
         @Override
         public void run() {
-            while(!Thread.currentThread().isInterrupted()) {
+            while(running) {
                 org.even23hator.projektproz.message.Message message = receiveFromRemote();
                 Log.d("XD", "received messageQQQ");
                 if(message == null) {
@@ -225,7 +248,7 @@ public class RemoteMessagePassingService extends Service {
             this.onMessage(new org.even23hator.projektproz.message.Message(MessageType.RemotePlayerConnected, null, null));
 
             org.even23hator.projektproz.message.Message message;
-            while(!Thread.currentThread().isInterrupted()) {
+            while(running) {
                 try {
                     message = messageQueue.take();
                     transmitMessage(message);
@@ -260,10 +283,14 @@ public class RemoteMessagePassingService extends Service {
 
         @Override
         public void run() {
-            while(!Thread.currentThread().isInterrupted()) {
+            while(running) {
                 MessageRouter.getInstance().routeMessage(new org.even23hator.projektproz.message.Message(MessageType.RemotePlayerConnected, null, null));
-                SystemClock.sleep(2000);
-             }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    // pass
+                }
+            }
         }
     }
 
